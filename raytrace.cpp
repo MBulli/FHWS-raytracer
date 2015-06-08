@@ -140,7 +140,7 @@ int main(int argc, _TCHAR* argv[])
 		for (int sx=0; sx < Xresolution; sx++) {
 			ray.setDirection(Vector(x, y, 0.0).vsub(ray.getOrigin()).normalize());
 			x += dx;
-			Color color = ray.shade(objekte, lights);
+			Color color = ray.shade(objekte, lights, backgroundColor);
 
 			bild.set(sx, scanline,
 				color.r > 1.0 ? 255 : int(255 * color.r),
