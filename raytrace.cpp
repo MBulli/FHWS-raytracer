@@ -121,8 +121,8 @@ int main(int argc, _TCHAR* argv[])
 	}
 	fclose (yyin);
 	
-	int Xresolution = 1250;
-	int Yresolution = 1250;
+	int Xresolution = resolutionX;
+	int Yresolution = resolutionY;
 	double dx = SCREENWIDTH / (double)Xresolution;
 	double dy = SCREENHEIGHT / (double)Yresolution;
 	double y = -0.5 * SCREENHEIGHT;
