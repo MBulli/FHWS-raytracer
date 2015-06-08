@@ -39,7 +39,8 @@ static int yywarn(char *s)
 static int yyerror(char *s)
 {
     fprintf(stderr,"error: line %d: %s\n", linenum, s);
-    exit(1);
+	return 1;
+    //exit(1);
 }
 
 struct {
@@ -55,6 +56,13 @@ extern void add_quadric(char *n, double a, double b, double c, double d, double 
 extern void add_property(char *n, double ar, double ag, double ab, double r, double g, double b, double s, double m);
 extern void add_objekt(char *ns, char *np);
 extern void add_light(char *n, double dirx, double diry, double dirz, double colr, double colg, double colb);
+extern void set_output_resolution(int x, int y);
+extern void set_scene_background(double r, double g, double b);
+extern void set_eyepoint(double x, double y, double z);
+extern void set_lookat(double x, double y, double z);
+extern void set_up(double x, double y, double z);
+extern void set_fovy(double fovyInDeg);
+extern void set_aspect(double a);
 %}
 
 
@@ -75,7 +83,7 @@ extern void add_light(char *n, double dirx, double diry, double dirz, double col
 %%
 
 scene 
-    : /* picture_parameters some_viewing_parameters global_lighting */ geometry
+    : picture_parameters some_viewing_parameters  /* global_lighting */ geometry
     ;
 
 some_viewing_parameters
@@ -126,38 +134,43 @@ viewing_parameter
 
 resolution
     : RESOLUTION index index
-      { printf("resolution %d %d\n", $2, $3 ); }
+      { 
+		printf("resolution %d %d\n", $2, $3 ); resolution_seen++; set_output_resolution($2, $3);
+	  }
     ;
 
 background
     : BACKGROUND colorVal colorVal colorVal
-      { printf("background %f %f %f\n", $2, $3, $4); }
+      { 
+		printf("background %f %f %f\n", $2, $3, $4); 
+		set_scene_background($2, $3, $4)
+	  }
     ;
 
 
 eyepoint
     : EYEPOINT realVal realVal realVal
-      { printf("eyepoint %f %f %f\n", $2, $3, $4 ); }
+      { printf("eyepoint %f %f %f\n", $2, $3, $4 ); eyepoint_seen++;  set_eyepoint($2, $3, $4); }
     ;
 
 lookat
     : LOOKAT realVal realVal realVal
-      { printf("lookat %f %f %f\n", $2, $3, $4 ); }
+      { printf("lookat %f %f %f\n", $2, $3, $4 ); lookat_seen++; set_lookat($2, $3, $4); }
     ;
 
 up
     : UP realVal realVal realVal
-      { printf("up %f %f %f\n", $2, $3, $4); }
+      { printf("up %f %f %f\n", $2, $3, $4); up_seen++; set_up($2, $3, $4); }
     ;
 
 fovy
     : FOVY realVal
-      { printf("fovy %f\n", $2); }
+      { printf("fovy %f\n", $2); set_fovy($2); }
     ;
 
 aspect
     : ASPECT realVal
-      { printf("aspect %f\n", $2 ); }
+      { printf("aspect %f\n", $2 ); aspect_seen++; set_aspect($2); }
     ;
 
 global_lighting

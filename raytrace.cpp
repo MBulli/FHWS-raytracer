@@ -7,6 +7,8 @@
 #include "Image.h"
 #include "vector"
 
+#include <iostream>
+
 const double SCREENWIDTH = 1000;
 const double SCREENHEIGHT = 1000;
 
@@ -17,14 +19,55 @@ vector<Property> properties;
 vector<Objekt> objekte;
 vector<Light> lights;
 
+int resolutionX = 1250;
+int resolutionY = 1250;
+Color backgroundColor;
+
+Vector eyepoint;
+Vector lookat;
+Vector up;
+double fieldOfView; // in rad
+double aspect;
+
 extern "C" {
 	extern FILE *yyin;
 	int yyparse();
 
+	// picture parameters
+	void set_output_resolution(int x, int y) {
+		fprintf(stderr, " set resolution X=%d, Y=%d\n", x, y);
+		resolutionX = x;
+		resolutionY = y;
+	};
+	void set_scene_background(double r, double g, double b) {
+		fprintf(stderr, " set background (%f, %f, %f)\n", r, g, b);
+		backgroundColor = Color(r, g, b);
+	};
+
+	// viewing parameters
+	void set_eyepoint(double x, double y, double z) {
+		eyepoint = Vector(x, y, z);
+	}
+	void set_lookat(double x, double y, double z) {
+		lookat = Vector(x, y, z);
+	}
+	void set_up(double x, double y, double z) {
+		up = Vector(x, y, z);
+	}
+	void set_fovy(double fovyInDeg) {
+		fieldOfView = fovyInDeg * M_PI / 180.0;
+	}
+	void set_aspect(double a) {
+		aspect = a;
+	}
+
+	// light
 	void add_light(char *n, double dirx, double diry, double dirz, double colr, double colg, double colb) {
 		fprintf(stderr,"  adding light %f %f %f %f %f %f\n", dirx, diry, dirz, colr, colg, colb);
 		lights.push_back(Light(Vector(dirx,diry,dirz).normalize(), Color(colr, colg, colb)));
 	};
+
+	// geometry
 	void add_quadric(char *n, double a, double b, double c, double d, double e, double f, double g, double h, double j, double k) {
 		fprintf(stderr,"  adding quadric %s %f %f %f %f %f %f %f %f %f %f %f %f\n", n, a,b,c,d,e,f,g,h,j,k);
 		surfaces.push_back(Surface(n, a,b,c,d,e,f,g,h,j,k));
@@ -66,12 +109,16 @@ extern "C" {
 int main(int argc, _TCHAR* argv[])
 {
 	/* parse the input file */
-	yyin = fopen("data/dflt.data","r");
+	yyin = fopen("data/test.data","r");
 	if(yyin == NULL) {
 		fprintf(stderr, "Error: Konnte Datei nicht öffnen\n");
 		return 1;
 	}
-	yyparse();
+	if (yyparse()) {
+		fprintf(stderr, "Error: Konnte Datei nicht einlesen\n");
+		std::cin.get();
+		return 1;
+	}
 	fclose (yyin);
 	
 	int Xresolution = 1250;
@@ -105,6 +152,7 @@ int main(int argc, _TCHAR* argv[])
 	char *name = "raytrace-bild.ppm";
 	bild.save(name);
 
+	std::cin.get();
 	return 0;
 }
 
