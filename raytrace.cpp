@@ -26,7 +26,7 @@ Color backgroundColor;
 Vector eyepoint;
 Vector lookat;
 Vector up;
-double fieldOfView; // in rad
+double fieldOfViewX; // in rad
 double aspect;
 
 extern "C" {
@@ -54,8 +54,8 @@ extern "C" {
 	void set_up(double x, double y, double z) {
 		up = Vector(x, y, z);
 	}
-	void set_fovy(double fovyInDeg) {
-		fieldOfView = fovyInDeg * M_PI / 180.0;
+	void set_fovx(double fovxInDeg) {
+		fieldOfViewX = fovxInDeg * M_PI / 180.0;
 	}
 	void set_aspect(double a) {
 		aspect = a;

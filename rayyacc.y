@@ -62,7 +62,7 @@ extern void set_scene_background(double r, double g, double b);
 extern void set_eyepoint(double x, double y, double z);
 extern void set_lookat(double x, double y, double z);
 extern void set_up(double x, double y, double z);
-extern void set_fovy(double fovyInDeg);
+extern void set_fovx(double fovxInDeg);
 extern void set_aspect(double a);
 %}
 
@@ -74,7 +74,7 @@ extern void set_aspect(double a);
 %token <intval> INTEGER
 %token <floatval> FLOAT
 %token <stringval> STRING
-%token RESOLUTION EYEPOINT LOOKAT UP FOVY ASPECT
+%token RESOLUTION EYEPOINT LOOKAT UP FOVX ASPECT
 %token OBJECT QUADRIC POLY SPHERE
 %token VERTEX
 %token PROPERTY AMBIENT DIFFUSE SPECULAR MIRROR
@@ -128,7 +128,7 @@ picture_parameter
 viewing_parameter
     : eyepoint
     | lookat
-    | fovy
+    | fovx
     | aspect
     | up
     ;
@@ -164,9 +164,9 @@ up
       { printf("up %f %f %f\n", $2, $3, $4); up_seen++; set_up($2, $3, $4); }
     ;
 
-fovy
-    : FOVY realVal
-      { printf("fovy %f\n", $2); set_fovy($2); }
+fovx
+    : FOVX realVal
+      { printf("fovx %f\n", $2); set_fovx($2); }
     ;
 
 aspect

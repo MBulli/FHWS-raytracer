@@ -101,7 +101,7 @@
      EYEPOINT = 262,
      LOOKAT = 263,
      UP = 264,
-     FOVY = 265,
+     FOVX = 265,
      ASPECT = 266,
      OBJECT = 267,
      QUADRIC = 268,
@@ -196,7 +196,7 @@ extern void set_scene_background(double r, double g, double b);
 extern void set_eyepoint(double x, double y, double z);
 extern void set_lookat(double x, double y, double z);
 extern void set_up(double x, double y, double z);
-extern void set_fovy(double fovyInDeg);
+extern void set_fovx(double fovxInDeg);
 extern void set_aspect(double a);
 
 
@@ -529,13 +529,13 @@ static const yytype_uint16 yyrline[] =
 static const char *const yytname[] =
 {
   "$end", "error", "$undefined", "INTEGER", "FLOAT", "STRING",
-  "RESOLUTION", "EYEPOINT", "LOOKAT", "UP", "FOVY", "ASPECT", "OBJECT",
+  "RESOLUTION", "EYEPOINT", "LOOKAT", "UP", "FOVX", "ASPECT", "OBJECT",
   "QUADRIC", "POLY", "SPHERE", "VERTEX", "PROPERTY", "AMBIENT", "DIFFUSE",
   "SPECULAR", "MIRROR", "AMBIENCE", "BACKGROUND", "LIGHT", "DIRECTION",
   "COLOR", "$accept", "scene", "some_viewing_parameters", "$@1",
   "viewing_parameters", "picture_parameters", "picture_parameter",
   "viewing_parameter", "resolution", "background", "eyepoint", "lookat",
-  "up", "fovy", "aspect", "geometry", "$@2", "$@3", "$@4", "$@5",
+  "up", "fovx", "aspect", "geometry", "$@2", "$@3", "$@4", "$@5",
   "surface_section", "surfaces", "one_surface", "quadric_surface",
   "sphere_surface", "polygon_surface", "$@6", "vertex_section", "vertices",
   "one_vertex", "polygon_section", "polygons", "one_polygon", "$@7",
@@ -1569,7 +1569,7 @@ yyreduce:
 
   case 21:
 
-    { printf("fovy %f\n", (yyvsp[(2) - (2)].floatval)); set_fovy((yyvsp[(2) - (2)].floatval)); ;}
+    { printf("fovx %f\n", (yyvsp[(2) - (2)].floatval)); set_fovx((yyvsp[(2) - (2)].floatval)); ;}
     break;
 
   case 22:

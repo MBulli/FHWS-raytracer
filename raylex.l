@@ -21,7 +21,7 @@ string   ([a-zA-Z0-9+-_]+)
 resolution { return(RESOLUTION); }
 eyepoint { return(EYEPOINT); }
 lookat { return(LOOKAT); }
-fovy { return(FOVY); }
+fovx { return(FOVX); }
 aspect { return(ASPECT); }
 object { return(OBJECT); }
 poly { return(POLY); }
