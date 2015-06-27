@@ -23,8 +23,8 @@ int resolutionX = 1250;
 int resolutionY = 1250;
 Color backgroundColor;
 
-Vector eyepoint;
-Vector lookat;
+Vector eyePoint;
+Vector lookatPoint;
 Vector up;
 double fieldOfViewX; // in rad
 double aspect;
@@ -46,10 +46,10 @@ extern "C" {
 
 	// viewing parameters
 	void set_eyepoint(double x, double y, double z) {
-		eyepoint = Vector(x, y, z);
+		eyePoint = Vector(x, y, z);
 	}
 	void set_lookat(double x, double y, double z) {
-		lookat = Vector(x, y, z);
+		lookatPoint = Vector(x, y, z);
 	}
 	void set_up(double x, double y, double z) {
 		up = Vector(x, y, z);
@@ -69,7 +69,7 @@ extern "C" {
 
 	// geometry
 	void add_quadric(char *n, double a, double b, double c, double d, double e, double f, double g, double h, double j, double k) {
-		fprintf(stderr,"  adding quadric %s %f %f %f %f %f %f %f %f %f %f %f %f\n", n, a,b,c,d,e,f,g,h,j,k);
+		fprintf(stderr,"  adding quadric %s %f %f %f %f %f %f %f %f %f %f\n", n, a,b,c,d,e,f,g,h,j,k);
 		surfaces.push_back(Surface(n, a,b,c,d,e,f,g,h,j,k));
 	};
 	void add_sphere(char *n, double xm, double ym, double zm, double r){
@@ -139,25 +139,37 @@ int main(int argc, _TCHAR* argv[])
 	}
 	fclose (yyin);
 	
-	int Xresolution = resolutionX;
-	int Yresolution = resolutionY;
-	double dx = SCREENWIDTH / (double)Xresolution;
-	double dy = SCREENHEIGHT / (double)Yresolution;
-	double y = -0.5 * SCREENHEIGHT;
-	Vector eye(0, 0, SCREENHEIGHT * 8.0);
-	Ray	ray(Vector(1,0,0), eye ,0);
+	
+	Vector eye(eyePoint.x, eyePoint.y, eyePoint.z);
+	Vector lookatVector = lookatPoint.vsub(eyePoint);
 
-	Image bild(Xresolution, Yresolution);
+	Ray	ray(lookatVector.normalize(), eye, 0);
 
-	for (int scanline=0; scanline < Yresolution; scanline++) {
+	double width = resolutionX;
+	double height = resolutionY;
+	double aspect = width / height;
 
-		printf("%4d\r", Yresolution-scanline);
+	double fovx = fieldOfViewX;
+	double fovy = fovx / aspect;
+	double x0 = 2 * (0 - (width / 2))*tan(fovx / 2.0) / width;
+	double y0 = 2 * (0 - (height / 2))*tan(fovy / 2.0) / height;
+	double dx = 2 * tan(fovx / 2.0) / width;
+	double dy = 2 * tan(fovy / 2.0) / height;
+
+
+	Image bild(resolutionX, resolutionY);
+
+	double y = y0;
+	for (int scanline=0; scanline < resolutionY; scanline++) {
+		printf("%4d\r", resolutionY-scanline);
+
 		y += dy;
-		double x = -0.5 * SCREENWIDTH;
+		double x = x0;
 
-		for (int sx=0; sx < Xresolution; sx++) {
-			ray.setDirection(Vector(x, y, 0.0).vsub(ray.getOrigin()).normalize());
+		for (int sx=0; sx < resolutionX; sx++) {
 			x += dx;
+			ray.setDirection(Vector(x, y, -1.0).vsub(ray.getOrigin()).normalize());
+
 			Color color = ray.shade(objekte, lights, backgroundColor);
 
 			bild.set(sx, scanline,
