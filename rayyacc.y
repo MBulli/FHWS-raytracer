@@ -53,6 +53,7 @@ struct {
 
 int yylex();
 extern void add_quadric(char *n, double a, double b, double c, double d, double e, double f, double g, double h, double j, double k);
+extern void add_sphere(char *n, double xm, double ym, double zm, double r);
 extern void add_property(char *n, double ar, double ag, double ab, double r, double g, double b, double s, double m);
 extern void add_objekt(char *ns, char *np);
 extern void add_light(char *n, double dirx, double diry, double dirz, double colr, double colg, double colb);
@@ -74,7 +75,7 @@ extern void set_aspect(double a);
 %token <floatval> FLOAT
 %token <stringval> STRING
 %token RESOLUTION EYEPOINT LOOKAT UP FOVY ASPECT
-%token OBJECT QUADRIC POLY
+%token OBJECT QUADRIC POLY SPHERE
 %token VERTEX
 %token PROPERTY AMBIENT DIFFUSE SPECULAR MIRROR
 %token AMBIENCE BACKGROUND
@@ -209,6 +210,7 @@ surfaces
 
 one_surface
     : quadric_surface
+	| sphere_surface
     | polygon_surface
     ;
 
@@ -220,6 +222,14 @@ quadric_surface
 		  free($2);
       }
     ;
+
+sphere_surface
+	: OBJECT STRING SPHERE realVal realVal realVal realVal
+	{
+		add_sphere($2, $4, $5, $6, $7);
+		free($2);
+	}
+	;
 
 polygon_surface
     : OBJECT STRING POLY 
