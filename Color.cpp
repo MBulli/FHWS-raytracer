@@ -4,7 +4,7 @@
 /*----------------------------------------------------------------------------*/
 /* addcolor   addiert zwei Farben zusammen                                    */
 /*----------------------------------------------------------------------------*/
-Color Color::addcolor(Color &c)
+Color Color::addcolor(const Color &c) const
 {
 	return Color(r+c.r, g+c.g, b+c.b);
 } /* addcolor() */
@@ -14,7 +14,7 @@ Color Color::addcolor(Color &c)
 /* outprodc   'filtert' eine Farbe                                            */
 /*----------------------------------------------------------------------------*/
 
-Color Color::outprodc(Color &c)
+Color Color::outprodc(const Color &c) const
 {
 	return Color(r*c.r, g*c.g, b*c.b);
 } /* outprodc() */

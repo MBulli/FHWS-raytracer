@@ -22,6 +22,7 @@ vector<Light> lights;
 int resolutionX = 1250;
 int resolutionY = 1250;
 Color backgroundColor;
+Color globalAmbient;
 
 Vector eyePoint;
 Vector lookatPoint;
@@ -59,6 +60,9 @@ extern "C" {
 	}
 	void set_aspect(double a) {
 		aspect = a;
+	}
+	void set_global_ambience(double r, double g, double b) {
+		globalAmbient = Color(r, g, b);
 	}
 
 	// light
@@ -170,7 +174,7 @@ int main(int argc, _TCHAR* argv[])
 			x += dx;
 			ray.setDirection(Vector(x, y, -1.0).vsub(ray.getOrigin()).normalize());
 
-			Color color = ray.shade(objekte, lights, backgroundColor);
+			Color color = ray.shade(objekte, lights, backgroundColor, globalAmbient);
 
 			bild.set(sx, scanline,
 				color.r > 1.0 ? 255 : int(255 * color.r),

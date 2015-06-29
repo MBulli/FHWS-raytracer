@@ -10,8 +10,8 @@ public:
 	Color(void) : r(0.0), g(0.0), b(0.0) {};
 	Color(double _r, double _g, double _b) : r(_r), g(_g), b(_b) {};
 
-	Color addcolor(Color &c);
-	Color outprodc(Color &c);
+	Color addcolor(const Color &c) const;
+	Color outprodc(const Color &c) const;
 	Color scmpy(double s);
 
 };

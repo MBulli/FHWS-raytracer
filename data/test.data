@@ -5,22 +5,22 @@
 #
 # Bild-Parameter
 #
-resolution      200    200		# Bildbreite Bildhoehe (in Pixeln)
+resolution      512    512		# Bildbreite Bildhoehe (in Pixeln)
 background	0.0	0.0	0.0		    # Hintergrundfarbe schwarz
 
 # 
 # Projektion
 #
-eyepoint     0.0	0.0		0.0	# Auge-Koordinaten
+eyepoint     0.0	0.0	 0.0	# Auge-Koordinaten
 lookat       0.0	0.0		0.0	# Punkt, auf den das Auge schaut
-fovx            90			# Field-of-view-Winkel
-aspect          1.0			# Verhaeltnis Breite zu Hoehe
-up             0.0     1.0     0.0     # Up-Vektor gibt an, wo oben ist
+fovx         90					# Field-of-view-Winkel
+aspect       1.0				# Verhaeltnis Breite zu Hoehe
+up           0.0     1.0     0.0     # Up-Vektor gibt an, wo oben ist
 
 #
 #  Globales Licht-Informationen
 #
-#ambience	0.0	0.0	0.0	# schwarz
+ambience	1.0	0.0	0.0	# 
 
 
 #
@@ -68,7 +68,7 @@ object geo4 sphere	-100.0   25.0   -300.0   50.0
 #object geo5 quadric 1.0 0.0 0.0 0.0 1.0 0.0 -200.0 1.0 500.0 71875.0
 object geo5 sphere	0.0   100.0   -250.0   25.0
 
-object mySphere sphere 0 0 -100 50
+object mySphere sphere 0 0 -20 15
 
 #
 #  Oberflaechenbeschaffenheiten

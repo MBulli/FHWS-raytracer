@@ -64,6 +64,7 @@ extern void set_lookat(double x, double y, double z);
 extern void set_up(double x, double y, double z);
 extern void set_fovx(double fovxInDeg);
 extern void set_aspect(double a);
+extern void set_global_ambience(double r, double g, double b);
 %}
 
 
@@ -84,7 +85,7 @@ extern void set_aspect(double a);
 %%
 
 scene 
-    : picture_parameters some_viewing_parameters  /* global_lighting */ geometry
+    : picture_parameters  some_viewing_parameters  global_lighting  geometry
     ;
 
 some_viewing_parameters
@@ -176,7 +177,7 @@ aspect
 
 global_lighting
     : AMBIENCE colorVal colorVal colorVal
-      { printf("ambience %f %f %f\n", $2, $3, $4); }
+      { printf("ambience %f %f %f\n", $2, $3, $4);  set_global_ambience($2, $3, $4); }
     ;
 
 geometry 
