@@ -10,12 +10,16 @@ class Ray
 	Vector direction, origin;
 	int	 depth;
 
-	Color shaded_color(Light *light, Ray &reflectedray, Vector &normal, ObjektPtr obj);
+	Color shaded_color(const Light *light, Ray &reflectedray, Vector &normal, ObjektPtr obj);
 
 public:
 	Ray(void) : direction(), origin(), depth (0) {};
 	Ray(const Vector &dir, Vector &orig, int d) : direction(dir), origin(orig), depth (d) {};
-	Color shade(std::vector<ObjektPtr>&, std::vector<Light> &, const Color& background, const Color& globalAmbient);
+
+	Color shade(const std::vector<ObjektPtr>& objects,
+				const std::vector<Light>& lights,
+				const Color& background,
+				const Color& globalAmbient);
 
 	Vector getDirection() const { return direction; };
 	Vector getOrigin() const { return origin; };

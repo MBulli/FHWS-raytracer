@@ -114,6 +114,7 @@
     <ClInclude Include="Image.h" />
     <ClInclude Include="Light.h" />
     <ClInclude Include="Objekt.h" />
+    <ClInclude Include="Parser.h" />
     <ClInclude Include="Property.h" />
     <ClInclude Include="QuadricObject.h" />
     <ClInclude Include="Ray.h" />
@@ -127,6 +128,7 @@
     <ClCompile Include="Image.cpp" />
     <ClCompile Include="Light.cpp" />
     <ClCompile Include="Objekt.cpp" />
+    <ClCompile Include="Parser.cpp" />
     <ClCompile Include="Property.cpp" />
     <ClCompile Include="QuadricObject.cpp" />
     <ClCompile Include="Ray.cpp" />

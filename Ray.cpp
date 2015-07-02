@@ -21,7 +21,7 @@ using namespace std;
 /* Rueckgabeparameter: Farbe, die auf diesem Strahl zu sehen ist              */
 /*----------------------------------------------------------------------------*/
 
-Color Ray::shade(vector<ObjektPtr> &objects, vector<Light> &lights, const Color& background, const Color& globalAmbient)
+Color Ray::shade(const vector<ObjektPtr> &objects, const vector<Light> &lights, const Color& background, const Color& globalAmbient)
 {
 	ObjektPtr closest = nullptr;
 	Color cur_color; 
@@ -51,7 +51,7 @@ Color Ray::shade(vector<ObjektPtr> &objects, vector<Light> &lights, const Color&
 		reflected_ray = reflect(intersection_position, normal);
 		cur_color = closest->getProperty().getAmbient().outprodc(globalAmbient);  // black statt Globales Ambient
 
-		for (vector<Light>::iterator li = lights.begin(); li != lights.end(); ++li) {
+		for (vector<Light>::const_iterator li = lights.begin(); li != lights.end(); ++li) {
 			lv.setDirection(li->getDirection());
 			lv.setOrigin(intersection_position);
 			something_intersected = false;
@@ -91,7 +91,7 @@ Color Ray::shade(vector<ObjektPtr> &objects, vector<Light> &lights, const Color&
 /* Rueckgabeparameter: errechnete Farbe                                       */
 /*----------------------------------------------------------------------------*/
 
-Color Ray::shaded_color(Light *light, Ray &reflectedray, Vector &normal, ObjektPtr obj)
+Color Ray::shaded_color(const Light *light, Ray &reflectedray, Vector &normal, ObjektPtr obj)
 {
 	Color reflected_color;
 	Color specular;
