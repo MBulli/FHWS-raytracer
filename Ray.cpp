@@ -3,6 +3,8 @@
 #include "math.h"
 #include "float.h"
 
+#include "Objekt.h"
+
 using namespace std;
 
 /*----------------------------------------------------------------------------*/
@@ -19,22 +21,22 @@ using namespace std;
 /* Rueckgabeparameter: Farbe, die auf diesem Strahl zu sehen ist              */
 /*----------------------------------------------------------------------------*/
 
-Color Ray::shade(vector<Objekt> &objects, vector<Light> &lights, const Color& background, const Color& globalAmbient)
+Color Ray::shade(vector<ObjektPtr> &objects, vector<Light> &lights, const Color& background, const Color& globalAmbient)
 {
-	Objekt *closest = NULL;
+	ObjektPtr closest = nullptr;
 	Color cur_color; 
 	double min_t = DBL_MAX, t;
 
-	Vector intersection_position,	normal;
+	Vector intersection_position, normal;
 	Ray lv, reflected_ray;
 	bool something_intersected = false;
 
-	for (vector<Objekt>::iterator o = objects.begin(); o != objects.end(); ++o) {
-
-		t = intersect(*o);
+	for (ObjektPtr obj : objects)
+	{
+		t = obj->intersect(*this);
 		if (0.0 < t && t < min_t) {
 			min_t = t;
-			closest = &(*o);
+			closest = obj;
 		}
 	}
 
@@ -53,13 +55,16 @@ Color Ray::shade(vector<Objekt> &objects, vector<Light> &lights, const Color& ba
 			lv.setDirection(li->getDirection());
 			lv.setOrigin(intersection_position);
 			something_intersected = false;
-			for (vector<Objekt>::iterator o = objects.begin(); o != objects.end(); ++o) {
-				t = lv.intersect(*o);
+
+			for (ObjektPtr obj : objects)
+			{
+				t = obj->intersect(lv);
 				if (t > 0.0) {
 					something_intersected = true;
 					break;
 				}
 			}
+
 			if (something_intersected == false) {
 				Color new_color = shaded_color(&(*li), reflected_ray, normal, closest);
 				cur_color = cur_color.addcolor(new_color);
@@ -86,7 +91,7 @@ Color Ray::shade(vector<Objekt> &objects, vector<Light> &lights, const Color& ba
 /* Rueckgabeparameter: errechnete Farbe                                       */
 /*----------------------------------------------------------------------------*/
 
-Color Ray::shaded_color(Light *light, Ray &reflectedray, Vector &normal, Objekt *obj)
+Color Ray::shaded_color(Light *light, Ray &reflectedray, Vector &normal, ObjektPtr obj)
 {
 	Color reflected_color;
 	Color specular;
@@ -138,50 +143,5 @@ Ray Ray::reflect(Vector &origin, Vector &normal)
 	return(reflection);
 } /* reflect() */
 
-double Ray::intersect(Objekt &obj)
-{
-	double a, b, c, d, e, f, g, h, j, k, t = -1.0,
-		acoef, bcoef, ccoef, root, disc;
 
-	Surface& surface = obj.getSurface();
-
-	a = surface.a; 
-	b = surface.b; 
-	c = surface.c;
-	d = surface.d; 
-	e = surface.e; 
-	f = surface.f;
-	g = surface.g; 
-	h = surface.h; 
-	j = surface.j;
-	k = surface.k;
-
-	acoef = Vector(direction.dot(Vector(a, b, c)),
-		e*direction.y + f*direction.z,
-		h*direction.z).dot(direction);
-
-	bcoef = 
-		Vector(d, g, j).dot(direction) + 
-		origin.dot( Vector( 
-		direction.dot(Vector(a+a , b, c)), 
-		direction.dot(Vector(b, e+e, f)), 
-		direction.dot(Vector(c, f, h+h))));
-
-	ccoef = origin.dot( 
-		Vector(Vector(a, b, c).dot(origin) + d,
-		e*origin.y + f*origin.z + g,
-		h*origin.z + j)) + k;
-
-	if (1.0 + acoef != 1.0) {
-		disc = bcoef * bcoef - 4 * acoef * ccoef;
-		if (disc > -DBL_EPSILON) {
-			root = sqrt( disc );
-			t = ( -bcoef - root ) / ( acoef + acoef );
-			if (t < 0.0) {
-				t = ( -bcoef + root ) / ( acoef + acoef );
-			}
-		}
-	}
-	return ((0.001 < t) ? t : -1.0);
-} /* intersect() */
 

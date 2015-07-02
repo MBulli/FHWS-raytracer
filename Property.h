@@ -1,6 +1,7 @@
 #pragma once
 #include "Color.h"
 #include "string"
+#include <memory>
 
 class Property
 {
@@ -10,12 +11,14 @@ class Property
 	std::string name;
 public:
 	Property(void) : reflectance(), specular(0.0), mirror(0.0) {};
-	Property(char *n, Color &a, Color &r, double s, double m) : name(n), ambient(a), reflectance(r), specular(s), mirror(m) {};
+	Property(char *n, Color &a, Color &r, double s, double m) 
+		: reflectance(r), ambient(a), specular(s), mirror(m), name(n) {};
 
-	Color getAmbient() { return ambient; };
-	Color getReflectance() { return reflectance; };
-	double getSpecular() { return specular; };
-	double getMirror() { return mirror; };
-	std::string getName() { return name; };
+	Color getAmbient()     const { return ambient; };
+	Color getReflectance() const { return reflectance; };
+	double getSpecular()   const { return specular; };
+	double getMirror()     const { return mirror; };
+	std::string getName()  const { return name; };
 };
 
+typedef std::shared_ptr<Property> PropertyPtr;

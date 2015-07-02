@@ -1,21 +1,37 @@
 #pragma once
-#include "Surface.h"
+
+#include <memory>
+
 #include "Property.h"
 #include "Vector.h"
-#include "vector"
 
+class Ray;
 
 class Objekt
 {
-	Surface *surface;
-	Property *properties;
+	PropertyPtr property;
+	std::string name;
 public:
-	Objekt(void) : surface(NULL), properties(NULL) {};
-	Objekt(Surface *s, Property *p) : surface(s), properties(p) {};
 
-	Property& getProperty()  { return *properties; };
-	Surface& getSurface()  { return *surface; };
+	Objekt(char* name) : property(nullptr), name(name) {};
+	Objekt(void)       : property(nullptr), name("")   {};
 
-	Vector get_normal(Vector &v);
+	virtual ~Objekt() {};
+
+	void setProperty(PropertyPtr property) { this->property = property; }
+	const Property& getProperty() const { return *property; };
+	const std::string& getName()  const { return name; }
+
+	/*----------------------------------------------------------------------------*/
+	/* get_normal   gibt den Normalenvektor der Oberflaeche eines Objekts an dem  */
+	/*   in 'v' bestimmten Punkt zurueck.                                         */
+	/* Aufrufparameter:    Punkt-Vektor, fuer den der N.-Vektor berechnet werd. s.*/
+	/*                     Datenstruktur in der der Objektpointer enthalten ist   */
+	/* Rueckgabeparameter: Berechneter Normalenvektor                             */
+	/*----------------------------------------------------------------------------*/
+	virtual Vector get_normal(Vector &v) const = 0;
+	virtual double intersect(const Ray& ray) const = 0;
 };
+
+typedef std::shared_ptr<Objekt> ObjektPtr;
 

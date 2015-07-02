@@ -5,7 +5,7 @@
 /*----------------------------------------------------------------------------*/
 /* cross   berechnet das Kreuzprodukt zweier Vektoren                         */
 /*----------------------------------------------------------------------------*/
-Vector Vector::cross(const Vector &v)
+Vector Vector::cross(const Vector &v) const
 {
 	Vector	result;
 
@@ -20,7 +20,7 @@ Vector Vector::cross(const Vector &v)
 /* dot   berechnet das innere Produkt (Skalarprodukt) zweier Vektoren         */
 /*----------------------------------------------------------------------------*/
 
-double Vector::dot(const Vector &v)
+double Vector::dot(const Vector &v) const
 {
 	return(x * v.x + y * v.y + z * v.z);
 } /* dot() */
@@ -28,7 +28,7 @@ double Vector::dot(const Vector &v)
 /*----------------------------------------------------------------------------*/
 /* normalize   normalisiert den uebergebenen Vektor                           */
 /*----------------------------------------------------------------------------*/
-Vector Vector::normalize()
+Vector Vector::normalize() const
 {
 	return svmpy( 1/veclength() );
 } /* normalize() */
@@ -37,7 +37,7 @@ Vector Vector::normalize()
 /*----------------------------------------------------------------------------*/
 /* svmpy   berechnet das Produkt zwischen einem Skalar und einem Vektor       */
 /*----------------------------------------------------------------------------*/
-Vector Vector::svmpy(double s)
+Vector Vector::svmpy(double s) const
 {
 	return Vector(s*x, s*y, s*z);
 } /* svmpy() */
@@ -49,7 +49,7 @@ Vector Vector::svmpy(double s)
 /* Rueckgabeparameter: Vektorsumme                                            */
 /*----------------------------------------------------------------------------*/
 
-Vector Vector::vadd(const Vector &v)
+Vector Vector::vadd(const Vector &v) const
 {
 	return Vector(x+v.x, y+v.y, z+v.z);
 } /* vadd() */
@@ -59,7 +59,7 @@ Vector Vector::vadd(const Vector &v)
 /* Aufrufparameter:    Vektor, dessen Laenge berechnet werden soll            */
 /* Rueckgabeparameter: Laenge des Vektors                                     */
 /*----------------------------------------------------------------------------*/
-double Vector::veclength ()
+double Vector::veclength () const
 {
 	return (sqrt (x*x + y*y + z*z));
 } /* veclength() */
@@ -68,7 +68,7 @@ double Vector::veclength ()
 /*----------------------------------------------------------------------------*/
 /* vsub   berechnet die Differenz zweier Vektoren                             */
 /*----------------------------------------------------------------------------*/
-Vector Vector::vsub(const Vector &v)
+Vector Vector::vsub(const Vector &v) const
 {
 	return Vector(x-v.x, y-v.y, z-v.z);
 } /* vsub() */

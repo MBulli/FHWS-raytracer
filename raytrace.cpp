@@ -5,18 +5,18 @@
 #include "Ray.h"
 #include "Color.h"
 #include "Image.h"
-#include "vector"
 
+#include "Objekt.h"
+#include "QuadricObject.h"
+
+#include <vector>
 #include <iostream>
-
-const double SCREENWIDTH = 1000;
-const double SCREENHEIGHT = 1000;
 
 using namespace std;
 
-vector<Surface> surfaces;
-vector<Property> properties;
-vector<Objekt> objekte;
+vector<PropertyPtr> properties;
+vector<ObjektPtr> rawObjects; // objects without property
+vector<ObjektPtr> objekte;
 vector<Light> lights;
 
 int resolutionX = 1250;
@@ -74,7 +74,9 @@ extern "C" {
 	// geometry
 	void add_quadric(char *n, double a, double b, double c, double d, double e, double f, double g, double h, double j, double k) {
 		fprintf(stderr,"  adding quadric %s %f %f %f %f %f %f %f %f %f %f\n", n, a,b,c,d,e,f,g,h,j,k);
-		surfaces.push_back(Surface(n, a,b,c,d,e,f,g,h,j,k));
+
+		QuadricObjectPtr quad = make_shared<QuadricObject>(n, a, b, c, d, e, f, g, h, j, k);
+		rawObjects.push_back(quad);
 	};
 	void add_sphere(char *n, double xm, double ym, double zm, double r){
 		fprintf(stderr, "  adding sphere %s midpoint=(%f, %f, %f) r=%f", n, xm, ym, zm, r);
@@ -92,39 +94,51 @@ extern "C" {
 		double j = -2 * zm;
 		double k = xm*xm + ym*ym + zm*zm - r*r;
 
-		surfaces.push_back(Surface(n, a, b, c, d, e, f, g, h, j, k));
+		QuadricObjectPtr quad = make_shared<QuadricObject>(n, a, b, c, d, e, f, g, h, j, k);
+		rawObjects.push_back(quad);
 	};
 	void add_property(char *n,  double ar, double ag, double ab, double r, double g, double b, double s, double m) {
 		fprintf(stderr,"  adding prop %f %f %f %f %f\n", r, g, b, s, m);
-		properties.push_back(Property(n, Color(ar, ag, ab), Color(r, g, b), s, m));
+
+		PropertyPtr prop = make_shared<Property>(n, Color(ar, ag, ab), Color(r, g, b), s, m);
+		properties.push_back(prop);
 	};
 	void add_objekt(char *ns, char *np) {
-		Surface *s = NULL;
-		Property *p = NULL;
+		ObjektPtr objekt = nullptr;
+		PropertyPtr property = nullptr;
 		string ss(ns);
 		string sp(np);
 
-		for(vector<Surface>::iterator i = surfaces.begin(); i != surfaces.end(); ++i) 
-			if(i->getName() == ss) {
-				s = &(*i);
+		for (ObjektPtr obj : rawObjects)
+		{
+			if (obj->getName() == ss)
+			{
+				objekt = obj;
 				break;
 			}
-		for(vector<Property>::iterator i = properties.begin(); i != properties.end(); ++i) 
-			if(i->getName() == sp) {
-				p = &(*i);
-				break;
-			}
+		}
 
-		if(s == NULL) {
-			fprintf(stderr, "Surface not found: %s\n", ns);
+		for (PropertyPtr prop : properties)
+		{
+			if (prop->getName() == sp)
+			{
+				property = prop;
+				break;
+			}
+		}
+
+		if(objekt == nullptr) {
+			fprintf(stderr, "Objekt not found: %s\n", ns);
 			exit(1);
 		}
-		if(p == NULL) {
+		if(property == nullptr) {
 			fprintf(stderr, "Property not found: %s\n", np);
 			exit(1);
 		}
-		objekte.push_back(Objekt(s, p));
-		fprintf(stderr, "  adding object: surface %s, property %s\n", ns, np);
+		
+		objekt->setProperty(property);
+		objekte.push_back(objekt);
+		fprintf(stderr, "  adding object %s, property %s\n", ns, np);
 	}
 }
 

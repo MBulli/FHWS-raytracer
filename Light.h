@@ -8,10 +8,10 @@ class Light
 	Color	 color;
 public:
 	Light(void): direction(), color() {};
-	Light(Vector &v, Color &c): direction(v), color(c) {};
+	Light(const Vector &v, const Color &c): direction(v), color(c) {};
 
-	Vector getDirection() { return direction; };
-	Color getColor() { return color; };
+	Vector getDirection() const { return direction; };
+	Color getColor() const { return color; };
 };
 
 
