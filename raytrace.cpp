@@ -8,6 +8,7 @@
 
 #include "Objekt.h"
 #include "QuadricObject.h"
+#include "SphereObject.h"
 
 #include <vector>
 #include <iostream>
@@ -81,21 +82,8 @@ extern "C" {
 	void add_sphere(char *n, double xm, double ym, double zm, double r){
 		fprintf(stderr, "  adding sphere %s midpoint=(%f, %f, %f) r=%f", n, xm, ym, zm, r);
 
-		// A = E = H = 1.0; B = C = F = 0.0; D = -2Xm, G = -2Ym, J = -2Zm und
-		// K = Xm ^ 2 + Ym ^ 2 + Zm ^ 2 - Radius ^ 2
-		double a, e, h;
-		double b, c, f;
-
-		a = e = h = 1;
-		b = c = f = 0;
-
-		double d = -2 * xm;
-		double g = -2 * ym;
-		double j = -2 * zm;
-		double k = xm*xm + ym*ym + zm*zm - r*r;
-
-		QuadricObjectPtr quad = make_shared<QuadricObject>(n, a, b, c, d, e, f, g, h, j, k);
-		rawObjects.push_back(quad);
+		SphereObjectPtr sphere = make_shared<SphereObject>(n, Vector(xm, ym, zm), r);
+		rawObjects.push_back(sphere);
 	};
 	void add_property(char *n,  double ar, double ag, double ab, double r, double g, double b, double s, double m) {
 		fprintf(stderr,"  adding prop %f %f %f %f %f\n", r, g, b, s, m);
