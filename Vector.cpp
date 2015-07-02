@@ -5,7 +5,7 @@
 /*----------------------------------------------------------------------------*/
 /* cross   berechnet das Kreuzprodukt zweier Vektoren                         */
 /*----------------------------------------------------------------------------*/
-Vector Vector::cross(Vector &v)
+Vector Vector::cross(const Vector &v)
 {
 	Vector	result;
 
@@ -20,7 +20,7 @@ Vector Vector::cross(Vector &v)
 /* dot   berechnet das innere Produkt (Skalarprodukt) zweier Vektoren         */
 /*----------------------------------------------------------------------------*/
 
-double Vector::dot(Vector &v)
+double Vector::dot(const Vector &v)
 {
 	return(x * v.x + y * v.y + z * v.z);
 } /* dot() */
@@ -49,7 +49,7 @@ Vector Vector::svmpy(double s)
 /* Rueckgabeparameter: Vektorsumme                                            */
 /*----------------------------------------------------------------------------*/
 
-Vector Vector::vadd(Vector &v)
+Vector Vector::vadd(const Vector &v)
 {
 	return Vector(x+v.x, y+v.y, z+v.z);
 } /* vadd() */
@@ -68,7 +68,7 @@ double Vector::veclength ()
 /*----------------------------------------------------------------------------*/
 /* vsub   berechnet die Differenz zweier Vektoren                             */
 /*----------------------------------------------------------------------------*/
-Vector Vector::vsub(Vector &v)
+Vector Vector::vsub(const Vector &v)
 {
 	return Vector(x-v.x, y-v.y, z-v.z);
 } /* vsub() */

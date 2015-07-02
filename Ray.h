@@ -14,14 +14,14 @@ class Ray
 
 public:
 	Ray(void) : direction(), origin(), depth (0) {};
-	Ray(Vector &dir, Vector &orig, int d) : direction(dir), origin(orig), depth (d) {};
+	Ray(const Vector &dir, Vector &orig, int d) : direction(dir), origin(orig), depth (d) {};
 	Color shade(std::vector<Objekt> &, std::vector<Light> &, const Color& background, const Color& globalAmbient);
 
 	Vector getDirection() { return direction; };
 	Vector getOrigin() { return origin; };
 	int getDepth() { return depth; };
 
-	void setDirection(Vector &v) { direction=v; };
+	void setDirection(const Vector &v) { direction=v; };
 	void setOrigin(Vector &v) { origin=v; };
 	void setDepth(int d) { depth=d; };
 

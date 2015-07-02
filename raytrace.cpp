@@ -144,35 +144,34 @@ int main(int argc, _TCHAR* argv[])
 	fclose (yyin);
 	
 	
-	Vector eye(eyePoint.x, eyePoint.y, eyePoint.z);
 	Vector lookatVector = lookatPoint.vsub(eyePoint);
-
-	Ray	ray(lookatVector.normalize(), eye, 0);
-
-	double width = resolutionX;
-	double height = resolutionY;
-	double aspect = width / height;
 
 	double fovx = fieldOfViewX;
 	double fovy = fovx / aspect;
-	double x0 = 2 * (0 - (width / 2))*tan(fovx / 2.0) / width;
-	double y0 = 2 * (0 - (height / 2))*tan(fovy / 2.0) / height;
-	double dx = 2 * tan(fovx / 2.0) / width;
-	double dy = 2 * tan(fovy / 2.0) / height;
+	
+	double width  = 2 * tan(0.5*fovx)*lookatVector.veclength();
+	double height = width / aspect;
+		
+	Vector xdir = lookatVector.cross(up).normalize();
+	Vector ydir = lookatVector.cross(xdir).normalize();
 
+	Vector dx = xdir.svmpy(width / resolutionX);
+	Vector dy = ydir.svmpy(height / resolutionY);
 
+	Vector start = lookatPoint;
+	start = start.vadd(xdir.svmpy(-0.5*width))
+			     .vadd(ydir.svmpy(-0.5*height));
+
+	Ray	ray(Vector(), eyePoint, 0);
 	Image bild(resolutionX, resolutionY);
 
-	double y = y0;
 	for (int scanline=0; scanline < resolutionY; scanline++) {
 		printf("%4d\r", resolutionY-scanline);
-
-		y += dy;
-		double x = x0;
-
+	
+		Vector renderPoint = start;
+		
 		for (int sx=0; sx < resolutionX; sx++) {
-			x += dx;
-			ray.setDirection(Vector(x, y, -1.0).vsub(ray.getOrigin()).normalize());
+			ray.setDirection(renderPoint.vsub(ray.getOrigin()).normalize());
 
 			Color color = ray.shade(objekte, lights, backgroundColor, globalAmbient);
 
@@ -180,7 +179,11 @@ int main(int argc, _TCHAR* argv[])
 				color.r > 1.0 ? 255 : int(255 * color.r),
 				color.g > 1.0 ? 255 : int(255 * color.g),
 				color.b > 1.0 ? 255 : int(255 * color.b));
+
+			renderPoint = renderPoint.vadd(dx);
 		}
+
+		start = start.vadd(dy);
 	}
 
 	char *name = "raytrace-bild.ppm";
