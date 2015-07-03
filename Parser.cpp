@@ -3,6 +3,7 @@
 #include "QuadricObject.h"
 #include "SphereObject.h"
 #include <iostream>
+#include "PolyObject.h"
 
 using namespace std;
 
@@ -10,6 +11,9 @@ std::vector<PropertyPtr> properties;
 std::vector<ObjektPtr> rawObjects; // objects without property
 std::vector<ObjektPtr> objekte;
 std::vector<Light> lights;
+
+PolyObjectPtr currentPolyObject = nullptr;
+vector<Vector> currentPolyVertices;
 
 int resolutionX = 1250;
 int resolutionY = 1250;
@@ -143,6 +147,41 @@ extern "C" {
 		objekt->setProperty(property);
 		objekte.push_back(objekt);
 		fprintf(stderr, "  adding object %s, property %s\n", ns, np);
+	}
+
+	// Poly objects
+	void begin_poly_object(char* n)	{
+		currentPolyObject = make_shared<PolyObject>(n);
+		currentPolyVertices.clear();
+	}
+
+	void add_poly_vertex(double x, double y, double z) {
+		currentPolyVertices.emplace_back(x, y, z);
+	}
+
+	void add_poly_triangle(int i0, int i1, int i2) {
+		Vector& v0 = currentPolyVertices.at(i0-1);
+		Vector& v1 = currentPolyVertices.at(i1-1);
+		Vector& v2 = currentPolyVertices.at(i2-1);
+
+		currentPolyObject->addTriangle(v0, v1, v2);
+	}
+
+	void add_poly_rectangle(int i0, int i1, int i2, int i3)	{
+		Vector& v0 = currentPolyVertices.at(i0-1);
+		Vector& v1 = currentPolyVertices.at(i1-1);
+		Vector& v2 = currentPolyVertices.at(i2-1);
+		Vector& v3 = currentPolyVertices.at(i3-1);
+
+		currentPolyObject->addTriangle(v0, v1, v2);
+		currentPolyObject->addTriangle(v2, v3, v0);
+	}
+
+	void end_poly_object() {
+		rawObjects.push_back(currentPolyObject);
+		currentPolyObject = nullptr;
+		currentPolyVertices.clear();
+		currentPolyVertices.shrink_to_fit();
 	}
 }
 

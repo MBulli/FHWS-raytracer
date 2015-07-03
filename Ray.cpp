@@ -34,6 +34,7 @@ Color Ray::shade(const vector<ObjektPtr> &objects, const vector<Light> &lights, 
 	for (ObjektPtr obj : objects)
 	{
 		t = obj->intersect(*this);
+
 		if (0.0 < t && t < min_t) {
 			min_t = t;
 			closest = obj;
@@ -46,7 +47,7 @@ Color Ray::shade(const vector<ObjektPtr> &objects, const vector<Light> &lights, 
 		else
 			cur_color = black;
 	} else {
-		intersection_position = origin.vadd(direction.svmpy(min_t));
+		intersection_position = intersectionPoint(min_t);
 		normal = closest->get_normal(intersection_position);
 		reflected_ray = reflect(intersection_position, normal);
 		cur_color = closest->getProperty().getAmbient().outprodc(globalAmbient);  // black statt Globales Ambient

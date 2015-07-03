@@ -6,6 +6,9 @@
 #include "Vector.h"
 
 class Ray;
+class Objekt;
+
+typedef std::shared_ptr<Objekt> ObjektPtr;
 
 class Objekt
 {
@@ -33,5 +36,4 @@ public:
 	virtual double intersect(const Ray& ray) const = 0;
 };
 
-typedef std::shared_ptr<Objekt> ObjektPtr;
 

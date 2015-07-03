@@ -42,6 +42,13 @@ Vector Vector::svmpy(double s) const
 	return Vector(s*x, s*y, s*z);
 } /* svmpy() */
 
+/*----------------------------------------------------------------------------*/
+/* svdiv   berechnet die  Division zwischen einem Skalar und einem Vektor     */
+/*----------------------------------------------------------------------------*/
+Vector Vector::svdiv(double s) const
+{
+	return Vector(x/s, y/s, z/s);
+}
 
 /*----------------------------------------------------------------------------*/
 /* vadd   berechnet die Summe zweier Vektoren                                 */

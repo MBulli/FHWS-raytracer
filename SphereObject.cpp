@@ -26,11 +26,12 @@ double SphereObject::intersect(const Ray& ray) const
 
 	if (D < 0)
 	{
-		return -1.0;
+		return -1;
 	}
 
 	double t1 = (-b + sqrt(D)) / 2*a;
 	double t2 = (-b - sqrt(D)) / 2*a;
 
-	return std::min(t1, t2);
+	double t = std::min(t1, t2);
+	return t;
 }

@@ -57,6 +57,13 @@ extern void add_sphere(char *n, double xm, double ym, double zm, double r);
 extern void add_property(char *n, double ar, double ag, double ab, double r, double g, double b, double s, double m);
 extern void add_objekt(char *ns, char *np);
 extern void add_light(char *n, double dirx, double diry, double dirz, double colr, double colg, double colb);
+
+extern void begin_poly_object(char *n);
+extern void add_poly_vertex(double x, double y, double z);
+extern void add_poly_triangle(int i0, int i1, int i2);
+extern void add_poly_rectangle(int i0, int i1, int i2, int i3);
+extern void end_poly_object();
+
 extern void set_output_resolution(int x, int y);
 extern void set_scene_background(double r, double g, double b);
 extern void set_eyepoint(double x, double y, double z);
@@ -234,10 +241,9 @@ sphere_surface
 
 polygon_surface
     : OBJECT STRING POLY 
-      {
-	printf("object poly\n"); 
-      }
+      {	printf("object poly\n"); begin_poly_object($2); free($2); }
       vertex_section polygon_section
+	  { end_poly_object(); }
     ;
 
 vertex_section
@@ -251,7 +257,7 @@ vertices
 
 one_vertex
     : VERTEX realVal realVal realVal
-      { printf("vertex %f %f %f\n", $2, $3, $4); }
+      { printf("vertex %f %f %f\n", $2, $3, $4); add_poly_vertex($2, $3, $4); }
     ;
 
 polygon_section
@@ -271,14 +277,30 @@ one_polygon
     ;
 
 indices
+	: triangle_indices
+	| rectangle_indices
+
+triangle_indices
+	: index index index
+	  { add_poly_triangle($1, $2, $3);  }
+	;
+
+rectangle_indices
+	: index index index index
+	  { add_poly_rectangle($1, $2, $3, $4); }
+	;
+
+/*
+indices
     : indices one_index
     | one_index
     ;
 
 one_index
 	: index
-	{ printf("polygon idx %d\n", $1); }
+	{ printf("polygon idx %d\n", $1); add_poly_index($1); }
 	;
+*/
 
 property_section
     : properties

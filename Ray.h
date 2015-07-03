@@ -30,6 +30,8 @@ public:
 	void setDepth(int d) { depth=d; };
 
 	Ray reflect(Vector &origin, Vector &normal);
+
+	Vector intersectionPoint(double t) const { return origin.vadd(direction.svmpy(t)); }
 };
 
 

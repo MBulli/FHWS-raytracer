@@ -51,5 +51,6 @@ double QuadricObject::intersect(const Ray& ray) const
 			}
 		}
 	}
-	return ((0.001 < t) ? t : -1.0);
+	t = ((0.001 < t) ? t : -1.0);
+	return t;
 }

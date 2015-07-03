@@ -115,6 +115,7 @@
     <ClInclude Include="Light.h" />
     <ClInclude Include="Objekt.h" />
     <ClInclude Include="Parser.h" />
+    <ClInclude Include="PolyObject.h" />
     <ClInclude Include="Property.h" />
     <ClInclude Include="QuadricObject.h" />
     <ClInclude Include="Ray.h" />
@@ -129,6 +130,7 @@
     <ClCompile Include="Light.cpp" />
     <ClCompile Include="Objekt.cpp" />
     <ClCompile Include="Parser.cpp" />
+    <ClCompile Include="PolyObject.cpp" />
     <ClCompile Include="Property.cpp" />
     <ClCompile Include="QuadricObject.cpp" />
     <ClCompile Include="Ray.cpp" />
