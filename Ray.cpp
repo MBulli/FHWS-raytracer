@@ -23,7 +23,7 @@ using namespace std;
 
 Color Ray::shade(const vector<ObjektPtr> &objects, const vector<Light> &lights, const Color& background, const Color& globalAmbient)
 {
-	ObjektPtr closest = nullptr;
+	ObjektConstPtr closest = nullptr;
 	Color cur_color; 
 	double min_t = DBL_MAX, t;
 
@@ -31,13 +31,20 @@ Color Ray::shade(const vector<ObjektPtr> &objects, const vector<Light> &lights, 
 	Ray lv, reflected_ray;
 	bool something_intersected = false;
 
-	for (ObjektPtr obj : objects)
+	for (ObjektConstPtr obj : objects)
 	{
-		t = obj->intersect(*this);
+		ObjektConstPtr child = nullptr;
+		t = obj->intersect(*this, &child);
 
 		if (0.0 < t && t < min_t) {
 			min_t = t;
-			closest = obj;
+
+			if (child)
+			{
+				closest = child;
+			} else {
+				closest = obj;
+			}
 		}
 	}
 
@@ -57,9 +64,10 @@ Color Ray::shade(const vector<ObjektPtr> &objects, const vector<Light> &lights, 
 			lv.setOrigin(intersection_position);
 			something_intersected = false;
 
-			for (ObjektPtr obj : objects)
+			for (ObjektConstPtr obj : objects)
 			{
-				t = obj->intersect(lv);
+				ObjektConstPtr child = nullptr;
+				t = obj->intersect(lv, &child);
 				if (t > 0.0) {
 					something_intersected = true;
 					break;
@@ -92,7 +100,7 @@ Color Ray::shade(const vector<ObjektPtr> &objects, const vector<Light> &lights, 
 /* Rueckgabeparameter: errechnete Farbe                                       */
 /*----------------------------------------------------------------------------*/
 
-Color Ray::shaded_color(const Light *light, Ray &reflectedray, Vector &normal, ObjektPtr obj)
+Color Ray::shaded_color(const Light *light, Ray &reflectedray, Vector &normal, ObjektConstPtr obj)
 {
 	Color reflected_color;
 	Color specular;

@@ -15,23 +15,25 @@ public:
 	const Vector& vertex(int i);
 
 	Vector get_normal(Vector& v) const override;
-	double intersect(const Ray& ray) const override;
+	double intersect(const Ray& ray, ObjektConstPtr* child) const override;
 	double intersect(const Ray& ray, float weight[3]) const;
 };
+
+typedef std::shared_ptr<Triangle> TrianglePtr;
 
 class PolyObject : public Objekt
 {
 private:
-	std::vector<Triangle> triangles;
-	std::map<Vector, Triangle> intersectedTriangles;
+	std::vector<TrianglePtr> triangles;
 public:
 	PolyObject(char *n) : Objekt(n) {};
 	~PolyObject();
 
 	Vector get_normal(Vector& v) const override;
-	double intersect(const Ray& ray) const override;
+	double intersect(const Ray& ray, ObjektConstPtr* outChild) const override;
 
-	void addTriangle(Vector p0, Vector p1, Vector p2) { triangles.emplace_back(p0, p1, p2); }
+	void setProperty(PropertyPtr property) override;
+	void addTriangle(Vector p0, Vector p1, Vector p2) { triangles.emplace_back(std::make_shared<Triangle>(p0, p1, p2)); }
 };
 
 typedef std::shared_ptr<PolyObject> PolyObjectPtr;

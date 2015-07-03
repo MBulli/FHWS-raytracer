@@ -19,7 +19,7 @@ public:
 
 
 	Vector get_normal(Vector& v) const override;
-	double intersect(const Ray& ray) const override;
+	double intersect(const Ray& ray, ObjektConstPtr* outChild) const override;
 };
 
 typedef std::shared_ptr<SphereObject> SphereObjectPtr;

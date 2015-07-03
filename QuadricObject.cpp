@@ -17,7 +17,7 @@ Vector QuadricObject::get_normal(Vector& v) const
 	return normal.normalize();
 }
 
-double QuadricObject::intersect(const Ray& ray) const
+double QuadricObject::intersect(const Ray& ray, ObjektConstPtr* outChild) const
 {
 	double t = -1.0;
 	double acoef, bcoef, ccoef, root, disc;

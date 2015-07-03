@@ -10,7 +10,7 @@ class Ray
 	Vector direction, origin;
 	int	 depth;
 
-	Color shaded_color(const Light *light, Ray &reflectedray, Vector &normal, ObjektPtr obj);
+	Color shaded_color(const Light *light, Ray &reflectedray, Vector &normal, ObjektConstPtr obj);
 
 public:
 	Ray(void) : direction(), origin(), depth (0) {};

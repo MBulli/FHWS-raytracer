@@ -13,7 +13,7 @@ Vector SphereObject::get_normal(Vector& v) const
 	return v.vsub(center).normalize();
 }
 
-double SphereObject::intersect(const Ray& ray) const
+double SphereObject::intersect(const Ray& ray, ObjektConstPtr* outChild) const
 {
 	Vector dir = ray.getDirection();
 	Vector org = ray.getOrigin();

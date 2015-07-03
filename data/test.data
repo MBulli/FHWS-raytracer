@@ -82,6 +82,12 @@ object cube poly
 	polygon	3	1	5	7
 	polygon	2	4	8	6
 
+object tri poly
+	vertex  0  0 0
+	vertex  0 50 0
+	vertex 50 50 0
+	polygon 3 2 1
+
 #
 #  Oberflaechenbeschaffenheiten
 #
@@ -136,6 +142,7 @@ color	   0.0	 0.5	 1.0
 #object	 geo2	 prop1
 #object	 geo3	 prop2
 #object	 geo4	 prop3
-object	 geo5	 prop1
-object  mySphere prop1
-#object  cube     prop3
+#object	 geo5	 prop1
+#object  mySphere prop1
+object  cube     prop3
+#object  tri     prop3

@@ -9,6 +9,7 @@ class Ray;
 class Objekt;
 
 typedef std::shared_ptr<Objekt> ObjektPtr;
+typedef std::shared_ptr<const Objekt> ObjektConstPtr;
 
 class Objekt
 {
@@ -21,7 +22,7 @@ public:
 
 	virtual ~Objekt() {};
 
-	void setProperty(PropertyPtr property) { this->property = property; }
+	virtual void setProperty(PropertyPtr property) { this->property = property; }
 	const Property& getProperty() const { return *property; };
 	const std::string& getName()  const { return name; }
 
@@ -33,7 +34,7 @@ public:
 	/* Rueckgabeparameter: Berechneter Normalenvektor                             */
 	/*----------------------------------------------------------------------------*/
 	virtual Vector get_normal(Vector &v) const = 0;
-	virtual double intersect(const Ray& ray) const = 0;
+	virtual double intersect(const Ray& ray, ObjektConstPtr* outChild) const = 0;
 };
 
 

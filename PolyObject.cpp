@@ -16,21 +16,31 @@ Vector PolyObject::get_normal(Vector& v) const
 	return Vector();
 }
 
-double PolyObject::intersect(const Ray& ray) const
+double PolyObject::intersect(const Ray& ray, ObjektConstPtr* outChild) const
 {
-	for (const Triangle& tri : triangles)
+	for (const TrianglePtr tri : triangles)
 	{
-		float weight[3];
-		double t = tri.intersect(ray, weight);
+		double t = tri->intersect(ray, outChild);
 
 		if (t != -1)
 		{
+			*outChild = tri;
 			return t;
 		}
 	}
 
 	// no intersection
 	return -1;
+}
+
+void PolyObject::setProperty(PropertyPtr property)
+{
+	Objekt::setProperty(property);
+
+	for (TrianglePtr tri : triangles)
+	{
+		tri->setProperty(property);
+	}
 }
 
 Triangle::~Triangle()
@@ -55,7 +65,7 @@ Vector Triangle::get_normal(Vector& v) const
 	return e1.cross(e2).normalize();
 }
 
-double Triangle::intersect(const Ray& ray) const
+double Triangle::intersect(const Ray& ray, ObjektConstPtr* outChild) const
 {
 	float weight[3];
 	double t = intersect(ray, weight);
@@ -76,7 +86,7 @@ double Triangle::intersect(const Ray& ray, float weight[3]) const
 	// Bayrycentric vertex weights
 	weight[0] = s.dot(q) / a;
 	weight[1] = ray.getDirection().dot(r) / a;
-	weight[2] = 1.0f - (weight[1] + weight[2]);
+	weight[2] = 1.0f - (weight[0] + weight[1]);
 
 	const float dist = e2.dot(r) / a;
 
