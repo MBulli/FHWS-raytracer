@@ -22,6 +22,7 @@ resolution { return(RESOLUTION); }
 eyepoint { return(EYEPOINT); }
 lookat { return(LOOKAT); }
 fovx { return(FOVX); }
+fovy { return(FOVY); }
 aspect { return(ASPECT); }
 object { return(OBJECT); }
 poly { return(POLY); }

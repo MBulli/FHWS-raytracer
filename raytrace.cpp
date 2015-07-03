@@ -36,7 +36,13 @@ int main(int argc, _TCHAR* argv[])
 	
 	double aspect = parser.getAspectRatio();
 	double fovx = parser.getFieldOfViewX();
-	double fovy = fovx / aspect;
+	double fovy = parser.getFieldOfViewY();
+
+	if (isnan(fovy)) {
+		fovy = fovx / aspect;
+	} else {
+		fovx = fovy * aspect;
+	}
 	
 	double width  = 2 * tan(0.5*fovx)*lookatVector.veclength();
 	double height = width / aspect;

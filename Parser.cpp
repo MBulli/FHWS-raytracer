@@ -23,7 +23,8 @@ Color globalAmbient;
 Vector eyePoint;
 Vector lookatPoint;
 Vector up;
-double fieldOfViewX; // in rad
+double fieldOfViewX = NAN; // in rad
+double fieldOfViewY = NAN; // in rad
 double aspect;
 
 extern "C" {
@@ -77,8 +78,20 @@ extern "C" {
 		up = Vector(x, y, z);
 	}
 	void set_fovx(double fovxInDeg) {
-		fieldOfViewX = fovxInDeg * M_PI / 180.0;
+		if (isnan(fieldOfViewY)) {
+			fieldOfViewX = fovxInDeg * M_PI / 180.0;
+		} else {
+			fprintf(stderr, "fovy already set. Ignoring fovx.");
+		}
 	}
+	void set_fovy(double fovyInDeg)	{
+		if (isnan(fieldOfViewX)) {
+			fieldOfViewY = fovyInDeg * M_PI / 180.0;
+		} else {
+			fprintf(stderr, "fovx already set. Ignoring fovy.");
+		}
+	}
+
 	void set_aspect(double a) {
 		aspect = a;
 	}
@@ -200,4 +213,5 @@ const Vector& Parser::getEyePoint()		const { return eyePoint; }
 const Vector& Parser::getLookatPoint()  const { return lookatPoint; }
 const Vector& Parser::getUp()           const { return up; }
 double        Parser::getFieldOfViewX() const { return fieldOfViewX; }
+double        Parser::getFieldOfViewY() const { return fieldOfViewY; }
 double		  Parser::getAspectRatio()  const { return aspect; }

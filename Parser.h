@@ -29,7 +29,8 @@ public:
 	const Vector& getEyePoint()		const;
 	const Vector& getLookatPoint()  const;
 	const Vector& getUp()           const;
-	double        getFieldOfViewX() const;
+	double        getFieldOfViewX() const; // in rad; NaN if not set
+	double        getFieldOfViewY() const; // in rad; NaN if not set
 	double		  getAspectRatio()  const;
 };
 

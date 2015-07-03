@@ -70,6 +70,7 @@ extern void set_eyepoint(double x, double y, double z);
 extern void set_lookat(double x, double y, double z);
 extern void set_up(double x, double y, double z);
 extern void set_fovx(double fovxInDeg);
+extern void set_fovy(double fovyInDeg);
 extern void set_aspect(double a);
 extern void set_global_ambience(double r, double g, double b);
 %}
@@ -82,7 +83,7 @@ extern void set_global_ambience(double r, double g, double b);
 %token <intval> INTEGER
 %token <floatval> FLOAT
 %token <stringval> STRING
-%token RESOLUTION EYEPOINT LOOKAT UP FOVX ASPECT
+%token RESOLUTION EYEPOINT LOOKAT UP FOVX FOVY ASPECT
 %token OBJECT QUADRIC POLY SPHERE
 %token VERTEX
 %token PROPERTY AMBIENT DIFFUSE SPECULAR MIRROR
@@ -136,7 +137,7 @@ picture_parameter
 viewing_parameter
     : eyepoint
     | lookat
-    | fovx
+    | fov
     | aspect
     | up
     ;
@@ -172,9 +173,19 @@ up
       { printf("up %f %f %f\n", $2, $3, $4); up_seen++; set_up($2, $3, $4); }
     ;
 
+fov
+	: fovx 
+	| fovy
+	;
+
 fovx
     : FOVX realVal
       { printf("fovx %f\n", $2); set_fovx($2); }
+    ;
+
+fovy
+    : FOVY realVal
+      { printf("fovy %f\n", $2); set_fovy($2); }
     ;
 
 aspect
@@ -338,8 +349,9 @@ diffuse
     ;
 
 specular
-    : SPECULAR  zeroToOneVal /* realVal */
+    : SPECULAR  zeroToOneVal  realVal 
       { 
+	  // TODO what is the realVal ?
 		prop.s = $2;
       }
     ;
