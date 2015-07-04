@@ -21,8 +21,8 @@ public:
 				const Color& background,
 				const Color& globalAmbient);
 
-	Vector getDirection() const { return direction; };
-	Vector getOrigin() const { return origin; };
+	const Vector& getDirection() const { return direction; };
+	const Vector& getOrigin() const { return origin; };
 	int getDepth() const { return depth; };
 
 	void setDirection(const Vector &v) { direction=v; };

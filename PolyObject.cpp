@@ -18,7 +18,7 @@ Vector PolyObject::get_normal(Vector& v) const
 
 double PolyObject::intersect(const Ray& ray, ObjektConstPtr* outChild) const
 {
-	for (const TrianglePtr tri : triangles)
+	for (const TrianglePtr& tri : triangles)
 	{
 		double t = tri->intersect(ray, outChild);
 
@@ -37,7 +37,7 @@ void PolyObject::setProperty(PropertyPtr property)
 {
 	Objekt::setProperty(property);
 
-	for (TrianglePtr tri : triangles)
+	for (TrianglePtr& tri : triangles)
 	{
 		tri->setProperty(property);
 	}
@@ -60,8 +60,6 @@ const Vector& Triangle::vertex(int i)
 
 Vector Triangle::get_normal(Vector& v) const
 {
-	const Vector& e1 = p1.vsub(p0);
-	const Vector& e2 = p2.vsub(p0);
 	return e1.cross(e2).normalize();
 }
 
@@ -74,8 +72,6 @@ double Triangle::intersect(const Ray& ray, ObjektConstPtr* outChild) const
 
 double Triangle::intersect(const Ray& ray, float weight[3]) const
 {
-	const Vector& e1 = p1.vsub(p0);
-	const Vector& e2 = p2.vsub(p0);
 	const Vector& q = ray.getDirection().cross(e2);
 
 	const float a = e1.dot(q);

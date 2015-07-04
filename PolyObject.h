@@ -7,9 +7,12 @@
 class Triangle : public Objekt
 {
 	Vector p0, p1, p2;
+	Vector e1, e2;
 public:
 	Triangle() : Objekt("") {};
-	Triangle(Vector p0, Vector p1, Vector p2) : Objekt(""), p0(p0), p1(p1), p2(p2) {};
+	Triangle(Vector p0, Vector p1, Vector p2) 
+		: Objekt(""), p0(p0), p1(p1), p2(p2), e1(p1.vsub(p0)), e2(p2.vsub(p0))
+	{};
 	~Triangle();
 
 	const Vector& vertex(int i);

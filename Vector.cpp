@@ -7,12 +7,9 @@
 /*----------------------------------------------------------------------------*/
 Vector Vector::cross(const Vector &v) const
 {
-	Vector	result;
-
-	result.x =   y * v.z - v.y * z;
-	result.y = -(x * v.z - v.x * z);
-	result.z =   x * v.y - v.x * y;
-	return (result);
+	return Vector( (y * v.z - v.y * z), 
+				  -(x * v.z - v.x * z),
+				   (x * v.y - v.x * y));
 } /* cross() */
 
 
