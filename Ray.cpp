@@ -39,8 +39,7 @@ Color Ray::shade(const vector<ObjektPtr> &objects, const vector<Light> &lights, 
 		if (0.0 < t && t < min_t) {
 			min_t = t;
 
-			if (child)
-			{
+			if (child) {
 				closest = child;
 			} else {
 				closest = obj;

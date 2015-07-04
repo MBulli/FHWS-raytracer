@@ -65,42 +65,41 @@ Vector Triangle::get_normal(Vector& v) const
 
 double Triangle::intersect(const Ray& ray, ObjektConstPtr* outChild) const
 {
-	float weight[3];
-	double t = intersect(ray, weight);
-	return t;
-}
+	static const double epsilon = 1e-7f;
+	static const double epsilon2 = 1e-10;
 
-double Triangle::intersect(const Ray& ray, float weight[3]) const
-{
 	const Vector& q = ray.getDirection().cross(e2);
 
-	const float a = e1.dot(q);
+	const double a = e1.dot(q);
+
+	// The ray is nearly parallel to the plane
+	if (a <= epsilon) {
+		return -1.0;
+	}
 
 	const Vector& s = ray.getOrigin().vsub(p0);
 	const Vector& r = s.cross(e1);
+	const double dist = e2.dot(r) / a;
+
+	// The ray origin is behind the plane
+	if (dist <= 0.0) {
+		return -1.0;
+	}
 
 	// Bayrycentric vertex weights
-	weight[0] = s.dot(q) / a;
-	weight[1] = ray.getDirection().dot(r) / a;
-	weight[2] = 1.0f - (weight[0] + weight[1]);
-
-	const float dist = e2.dot(r) / a;
-
-	static const float epsilon = 1e-7f;
-	static const float epsilon2 = 1e-10;
+	const double weight0 = s.dot(q) / a;
+	const double weight1 = ray.getDirection().dot(r) / a;
+	const double weight2 = 1.0f - (weight0 + weight1);
 
 	// The ray is nearly parallel to the riangle, or the
 	// intersection lies outside the triangle or behind
 	// the ray origin
-	if ((a <= epsilon)
-		|| (weight[0] < -epsilon2)
-		|| (weight[1] < -epsilon2)
-		|| (weight[2] < -epsilon2)
-		|| (dist <= 0.0f)) 
+	if ((weight0 < -epsilon2)
+		|| (weight1 < -epsilon2)
+		|| (weight2 < -epsilon2))
 	{
 		return -1.0;
-	} 
+	}
 
 	return dist;
 }
-

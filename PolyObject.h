@@ -19,7 +19,6 @@ public:
 
 	Vector get_normal(Vector& v) const override;
 	double intersect(const Ray& ray, ObjektConstPtr* child) const override;
-	double intersect(const Ray& ray, float weight[3]) const;
 };
 
 typedef std::shared_ptr<Triangle> TrianglePtr;
