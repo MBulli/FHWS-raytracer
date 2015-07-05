@@ -13,6 +13,26 @@ Vector SphereObject::get_normal(Vector& v) const
 	return v.vsub(center).normalize();
 }
 
+Color SphereObject::get_color(const Vector& intersection, const Color& globalAmbient) const
+{
+	Color matColor = Objekt::get_color(intersection, globalAmbient);
+	if (texture)
+	{
+		const double len = intersection.veclength();
+
+		//double u = intersection.x / len;
+		//double v = intersection.y / len;
+
+		double u = (atan2(intersection.z, intersection.x) / M_PI + 1.0f) * 0.5f;
+		double v = acos(intersection.y / len) / M_PI;
+
+		Color tex = texture->getTexel(u, v);
+
+		matColor = matColor.outprodc(tex);
+	}
+	return matColor;
+}
+
 double SphereObject::intersect(const Ray& ray, ObjektConstPtr* outChild) const
 {
 	Vector dir = ray.getDirection();

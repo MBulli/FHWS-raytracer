@@ -17,8 +17,9 @@ public:
 	Vector getCenter() const { return center; }
 	double getRadius() const { return radius; }
 
-
 	Vector get_normal(Vector& v) const override;
+
+	Color get_color(const Vector& intersection, const Color& globalAmbient) const override;
 	double intersect(const Ray& ray, ObjektConstPtr* outChild) const override;
 };
 

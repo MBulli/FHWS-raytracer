@@ -2,6 +2,7 @@
 
 #include <memory>
 
+#include "Texture.h"
 #include "Property.h"
 #include "Vector.h"
 
@@ -13,7 +14,9 @@ typedef std::shared_ptr<const Objekt> ObjektConstPtr;
 
 class Objekt
 {
+protected:
 	PropertyPtr property;
+	TexturePtr texture;
 	std::string name;
 public:
 
@@ -23,7 +26,10 @@ public:
 	virtual ~Objekt() {};
 
 	virtual void setProperty(PropertyPtr property) { this->property = property; }
-	const Property& getProperty() const { return *property; };
+	virtual void setTexture(TexturePtr texture) { this->texture = texture; }
+
+	const Property& getProperty() const { return *property; }
+	const Texture&  getTexture()  const { return *texture; }
 	const std::string& getName()  const { return name; }
 
 	/*----------------------------------------------------------------------------*/
@@ -34,6 +40,7 @@ public:
 	/* Rueckgabeparameter: Berechneter Normalenvektor                             */
 	/*----------------------------------------------------------------------------*/
 	virtual Vector get_normal(Vector &v) const = 0;
+	virtual Color get_color(const Vector& intersection, const Color& globalAmbient) const;
 	virtual double intersect(const Ray& ray, ObjektConstPtr* outChild) const = 0;
 };
 

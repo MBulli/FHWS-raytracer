@@ -113,6 +113,7 @@
     <ClInclude Include="Color.h" />
     <ClInclude Include="Image.h" />
     <ClInclude Include="Light.h" />
+    <ClInclude Include="lodepng.h" />
     <ClInclude Include="Objekt.h" />
     <ClInclude Include="Parser.h" />
     <ClInclude Include="PolyObject.h" />
@@ -122,12 +123,14 @@
     <ClInclude Include="SphereObject.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="Texture.h" />
     <ClInclude Include="Vector.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Color.cpp" />
     <ClCompile Include="Image.cpp" />
     <ClCompile Include="Light.cpp" />
+    <ClCompile Include="lodepng.cpp" />
     <ClCompile Include="Objekt.cpp" />
     <ClCompile Include="Parser.cpp" />
     <ClCompile Include="PolyObject.cpp" />
@@ -144,6 +147,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Vector.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

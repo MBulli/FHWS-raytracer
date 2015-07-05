@@ -20,7 +20,6 @@ using namespace std;
 /*   bereits bestimmten Farbwerten.                                           */
 /* Rueckgabeparameter: Farbe, die auf diesem Strahl zu sehen ist              */
 /*----------------------------------------------------------------------------*/
-
 Color Ray::shade(const vector<ObjektPtr> &objects, const vector<Light> &lights, const Color& background, const Color& globalAmbient)
 {
 	ObjektConstPtr closest = nullptr;
@@ -55,8 +54,9 @@ Color Ray::shade(const vector<ObjektPtr> &objects, const vector<Light> &lights, 
 	} else {
 		intersection_position = intersectionPoint(min_t);
 		normal = closest->get_normal(intersection_position);
+		cur_color = closest->get_color(intersection_position, globalAmbient);
+
 		reflected_ray = reflect(intersection_position, normal);
-		cur_color = closest->getProperty().getAmbient().outprodc(globalAmbient);  // black statt Globales Ambient
 
 		for (vector<Light>::const_iterator li = lights.begin(); li != lights.end(); ++li) {
 			lv.setDirection(li->getDirection());
