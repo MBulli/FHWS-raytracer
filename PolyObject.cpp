@@ -78,7 +78,7 @@ Vector Triangle::barycentric(const Vector& point) const
 Color Triangle::get_color(const Ray& ray, const Vector& intersection, const Color& globalAmbient) const
 {
 	Color matColor = Objekt::get_color(ray, intersection, globalAmbient);
-	if (texture)
+	if (property->getTexture())
 	{
 		Vector bary = barycentric(intersection);
 
@@ -89,7 +89,7 @@ Color Triangle::get_color(const Ray& ray, const Vector& intersection, const Colo
 		u = fmin(fmax(0, u), 1);
 		v = fmin(fmax(0, v), 1);
 
-		Color tex = texture->getTexel(u, v);
+		Color tex = property->getTexture()->getTexel(u, v);
 		return tex;
 
 		//return Color(bary.x, bary.y, bary.z);

@@ -45,6 +45,7 @@ static int yyerror(char *s)
 
 struct {
 	double ar,ag,ab, r, g, b, specular, specShininess, mirror;
+	char* texture;
 	} prop;
 
 struct {
@@ -54,7 +55,7 @@ struct {
 int yylex();
 extern void add_quadric(char *n, double a, double b, double c, double d, double e, double f, double g, double h, double j, double k);
 extern void add_sphere(char *n, double xm, double ym, double zm, double r);
-extern void add_property(char *n, double ar, double ag, double ab, double r, double g, double b, double s, double shininess, double m);
+extern void add_property(char *n, double ar, double ag, double ab, double r, double g, double b, double s, double shininess, double m, char* textureFilename);
 extern void add_objekt(char *ns, char *np);
 extern void add_light(char *n, double dirx, double diry, double dirz, double colr, double colg, double colb);
 
@@ -87,7 +88,7 @@ extern void set_global_ambience(double r, double g, double b);
 %token RESOLUTION EYEPOINT LOOKAT UP FOVX FOVY ASPECT
 %token OBJECT QUADRIC POLY SPHERE
 %token VERTEX TEX
-%token PROPERTY AMBIENT DIFFUSE SPECULAR MIRROR
+%token PROPERTY AMBIENT DIFFUSE SPECULAR MIRROR TEXTURE
 %token AMBIENCE BACKGROUND
 %token LIGHT DIRECTION COLOR
 
@@ -340,10 +341,11 @@ properties
     ;
 
 one_property
-    : PROPERTY STRING ambient diffuse specular mirror
+    : PROPERTY STRING ambient diffuse specular mirror texture
 	{
-		add_property($2, prop.ar, prop.ag, prop.ab, prop.r, prop.g, prop.b, prop.specular, prop.specShininess, prop.mirror); 
+		add_property($2, prop.ar, prop.ag, prop.ab, prop.r, prop.g, prop.b, prop.specular, prop.specShininess, prop.mirror, prop.texture); 
 		free($2);
+		free(prop.texture);
 	}
     ;
 
@@ -379,6 +381,13 @@ mirror
 		prop.mirror = $2;
       }
     ;
+
+texture
+	: TEXTURE STRING
+		{
+			prop.texture = $2;
+		}
+	;
 
 object_section
     : objects

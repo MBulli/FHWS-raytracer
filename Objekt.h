@@ -16,7 +16,6 @@ class Objekt
 {
 protected:
 	PropertyPtr property;
-	TexturePtr texture;
 	std::string name;
 public:
 
@@ -26,10 +25,8 @@ public:
 	virtual ~Objekt() {};
 
 	virtual void setProperty(PropertyPtr property) { this->property = property; }
-	virtual void setTexture(TexturePtr texture) { this->texture = texture; }
 
 	const Property& getProperty() const { return *property; }
-	const Texture&  getTexture()  const { return *texture; }
 	const std::string& getName()  const { return name; }
 
 	/*----------------------------------------------------------------------------*/

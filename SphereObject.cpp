@@ -16,7 +16,7 @@ Vector SphereObject::get_normal(Vector& v) const
 Color SphereObject::get_color(const Ray& ray, const Vector& intersection, const Color& globalAmbient) const
 {
 	Color matColor = Objekt::get_color(ray, intersection, globalAmbient);
-	if (texture)
+	if (property->getTexture())
 	{
 		const double len = intersection.veclength();
 
@@ -26,7 +26,7 @@ Color SphereObject::get_color(const Ray& ray, const Vector& intersection, const 
 		double u = (atan2(intersection.z, intersection.x) / M_PI + 1.0f) * 0.5f;
 		double v = acos(intersection.y / len) / M_PI;
 
-		Color tex = texture->getTexel(u, v);
+		Color tex = property->getTexture()->getTexel(u, v);
 
 		matColor = matColor.outprodc(tex);
 	}

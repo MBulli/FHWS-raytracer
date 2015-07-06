@@ -2,6 +2,7 @@
 #include "Color.h"
 #include "string"
 #include <memory>
+#include "Texture.h"
 
 class Property
 {
@@ -9,10 +10,13 @@ class Property
 	Color ambient;
 	double specular, shininess, mirror;
 	std::string name;
+	TexturePtr texture = nullptr;
 public:
 	Property(void) : reflectance(), specular(0.0), shininess(0.0), mirror(0.0) {};
 	Property(char *n, Color &a, Color &r, double s, double shininess, double m) 
 		: reflectance(r), ambient(a), specular(s), shininess(shininess), mirror(m), name(n) {};
+
+	void setTexture(TexturePtr tex) { texture = tex; }
 
 	Color getAmbient()     const { return ambient; };
 	Color getReflectance() const { return reflectance; };
@@ -20,6 +24,7 @@ public:
 	double getShininess()  const { return shininess; }
 	double getMirror()     const { return mirror; };
 	std::string getName()  const { return name; };
+	TextureConstPtr getTexture() const { return texture; }
 };
 
 typedef std::shared_ptr<Property> PropertyPtr;
