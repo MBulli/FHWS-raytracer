@@ -125,7 +125,7 @@ void tracePartition(Config& c, Parser& parser, int index, int count)
 
 int main(int argc, _TCHAR* argv[])
 {
-	Parser parser("data/test.data");
+	Parser parser("data/scene.data");
 	if (!parser.start())
 	{
 		std::cin.get();
@@ -134,29 +134,28 @@ int main(int argc, _TCHAR* argv[])
 
 	Config config(parser);
 
-	const int num_threads = 1;
+	const int num_threads = 4;
 	int partSize = 0;
 	int roundUp = static_cast<int>(remquof(config.resolutionY, num_threads, &partSize));
 
 	std::thread t[num_threads];
-	long long longestRunTime = 0;
-
+	auto totalRunTime = std::chrono::system_clock::now();
+	
 	cout << "Will run on " << num_threads << " Threads each calculating " << partSize << " scanlines." << endl;
 
 	for (int i = 0; i < num_threads; ++i) {
-		t[i] = std::thread([&config, &parser, num_threads, i, partSize, roundUp, &longestRunTime]()
+		t[i] = std::thread([&config, &parser, num_threads, i, partSize, roundUp]()
 		{
 			int count = partSize;
 			if (i == num_threads - 1) {
 				count += roundUp;
 			}
 
-			auto startTime = std::chrono::system_clock::now();
+			auto threadStartTime = std::chrono::system_clock::now();
 
 			tracePartition(config, parser, i, count);
 
-			auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - startTime);
-			longestRunTime = duration.count(); // slowest thread defines the whole duration
+			auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - threadStartTime);
 			cout << "Thread " << i << " took " << duration.count() << "ms" << endl;
 		});
 	}
@@ -166,7 +165,9 @@ int main(int argc, _TCHAR* argv[])
 		t[i].join();
 	}
 
-	cout << "Tracing took " << longestRunTime / 1000 << "sec (" << longestRunTime << "ms) in total." << endl;
+	auto totalRunDuration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - totalRunTime);
+
+	cout << "Tracing took " << totalRunDuration.count() / 1000 << "sec (" << totalRunDuration.count() << "ms) in total." << endl;
 	cout << "Done tracing. Writing file ..." << endl;
 
 	char *name = "raytrace-bild.ppm";
