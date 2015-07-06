@@ -17,19 +17,20 @@ Vector PolyObject::get_normal(Vector& v) const
 
 double PolyObject::intersect(const Ray& ray, ObjektConstPtr* outChild) const
 {
+	double min_t = DBL_MAX;
 	for (const TrianglePtr& tri : triangles)
 	{
 		double t = tri->intersect(ray, outChild);
 
-		if (t != -1)
+		if (t > 0.0 && t < min_t)
 		{
 			*outChild = tri;
-			return t;
+			min_t = t;
 		}
 	}
 
 	// no intersection
-	return -1;
+	return min_t == DBL_MAX ? -1 : min_t;
 }
 
 void PolyObject::setProperty(PropertyPtr property)
