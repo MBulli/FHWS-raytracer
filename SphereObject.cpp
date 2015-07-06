@@ -13,9 +13,9 @@ Vector SphereObject::get_normal(Vector& v) const
 	return v.vsub(center).normalize();
 }
 
-Color SphereObject::get_color(const Vector& intersection, const Color& globalAmbient) const
+Color SphereObject::get_color(const Ray& ray, const Vector& intersection, const Color& globalAmbient) const
 {
-	Color matColor = Objekt::get_color(intersection, globalAmbient);
+	Color matColor = Objekt::get_color(ray, intersection, globalAmbient);
 	if (texture)
 	{
 		const double len = intersection.veclength();

@@ -4,8 +4,7 @@
 #include "PolyObject.h"
 
 #include <map>
-
-
+#include <cmath>
 
 PolyObject::~PolyObject()
 {
@@ -58,6 +57,48 @@ const Vector& Triangle::vertex(int i)
 	}
 }
 
+Vector Triangle::barycentric(const Vector& point) const
+{
+	Vector v0 = p1.vsub(p0);
+	Vector v1 = p2.vsub(p0);
+	Vector v2 = point.vsub(p0);
+	double d00 = v0.dot(v0);
+	double d01 = v0.dot(v1);
+	double d11 = v1.dot(v1);
+	double d20 = v2.dot(v0);
+	double d21 = v2.dot(v1);
+	double denom = d00 * d11 - d01 * d01;
+	double v = (d11 * d20 - d01 * d21) / denom;
+	double w = (d00 * d21 - d01 * d20) / denom;
+	double u = 1.0f - v - w;
+
+	return Vector(u, v, w);
+}
+
+Color Triangle::get_color(const Ray& ray, const Vector& intersection, const Color& globalAmbient) const
+{
+	Color matColor = Objekt::get_color(ray, intersection, globalAmbient);
+	if (texture)
+	{
+		Vector bary = barycentric(intersection);
+
+		double u = bary.x * tex0.x + bary.y * tex1.x + bary.z * tex2.x;
+		double v = bary.x * tex0.y + bary.y * tex1.y + bary.z * tex2.y;
+
+		// fix float rounding errors
+		u = fmin(fmax(0, u), 1);
+		v = fmin(fmax(0, v), 1);
+
+		Color tex = texture->getTexel(u, v);
+		return tex;
+
+		//return Color(bary.x, bary.y, bary.z);
+		//matColor = tex.outprodc(matColor);
+	}
+
+	return matColor;
+}
+
 Vector Triangle::get_normal(Vector& v) const
 {
 	return e1.cross(e2).normalize();
@@ -103,3 +144,4 @@ double Triangle::intersect(const Ray& ray, ObjektConstPtr* outChild) const
 
 	return dist;
 }
+

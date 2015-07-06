@@ -7,7 +7,7 @@ background	0.0	0.0	0.0		    # Hintergrundfarbe schwarz
 # 
 # Projektion
 #
-eyepoint     40.0	50.0	 100.0	# Auge-Koordinaten
+eyepoint     0.0	0.0	 100.0	# Auge-Koordinaten
 lookat       0.0	0.0		0.0	# Punkt, auf den das Auge schaut
 fovx         90					# Field-of-view-Winkel
 aspect       1.333333333333				# Verhaeltnis Breite zu Hoehe
@@ -82,12 +82,31 @@ object cube poly
 	polygon	3	1	5	7
 	polygon	2	4	8	6
 
+
+# 2__3
+# |  /
+# | /
+# 1/
 object tri poly
-	vertex  0  0 0
-	vertex  0 50 0
-	vertex 50 50 0
+	vertex  0  0 -10
+	vertex  0 50 -10
+	vertex 50 50 -10
+	tex 1 0  1
+	tex 2 0  0
+	tex 3 1  0
 	polygon 3 2 1
 
+object plane poly
+	vertex 0  0  0
+	vertex 0  50 0
+	vertex 50 50 0
+	vertex 50 0  0
+	tex 1 0.125 0.125
+	tex 2 0.125 0.125
+	tex 3 0.125 0.125
+	tex 4 0.125 0.125
+	polygon 3 2 1
+	
 #
 #  Oberflaechenbeschaffenheiten
 #
@@ -138,11 +157,12 @@ color	   0.0	 0.5	 1.0
 #
 
 # Zuordnungstabelle
-object	 geo1	 prop3
-object	 geo2	 prop1
-object	 geo3	 prop2
-object	 geo4	 prop3
-object	 geo5	 prop1
-object  mySphere prop1
-#object  cube     prop3
+#object	 geo1	 prop3
+#object	 geo2	 prop1
+#object	 geo3	 prop2
+#object	 geo4	 prop3
+#object	 geo5	 prop1
+#object  mySphere prop1
+##object  cube     prop3
 #object  tri     prop3
+object  plane prop3

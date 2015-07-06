@@ -40,7 +40,7 @@ public:
 	/* Rueckgabeparameter: Berechneter Normalenvektor                             */
 	/*----------------------------------------------------------------------------*/
 	virtual Vector get_normal(Vector &v) const = 0;
-	virtual Color get_color(const Vector& intersection, const Color& globalAmbient) const;
+	virtual Color get_color(const Ray& ray, const Vector& intersection, const Color& globalAmbient) const;
 	virtual double intersect(const Ray& ray, ObjektConstPtr* outChild) const = 0;
 };
 

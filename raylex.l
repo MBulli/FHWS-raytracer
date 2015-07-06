@@ -27,6 +27,7 @@ aspect { return(ASPECT); }
 object { return(OBJECT); }
 poly { return(POLY); }
 polygon { return(POLY); } /* equivalent spelling */
+tex { return(TEX); }
 vertex { return(VERTEX); }
 quadric { return(QUADRIC); }
 sphere { return(SPHERE); }

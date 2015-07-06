@@ -125,7 +125,7 @@ void tracePartition(Config& c, Parser& parser, int index, int count)
 
 int main(int argc, _TCHAR* argv[])
 {
-	Parser parser("data/scene.data");
+	Parser parser("data/test.data");
 	if (!parser.start())
 	{
 		std::cin.get();
@@ -134,7 +134,7 @@ int main(int argc, _TCHAR* argv[])
 
 	Config config(parser);
 
-	const int num_threads = 4;
+	const int num_threads = 1;
 	int partSize = 0;
 	int roundUp = static_cast<int>(remquof(config.resolutionY, num_threads, &partSize));
 

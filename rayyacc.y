@@ -62,6 +62,7 @@ extern void begin_poly_object(char *n);
 extern void add_poly_vertex(double x, double y, double z);
 extern void add_poly_triangle(int i0, int i1, int i2);
 extern void add_poly_rectangle(int i0, int i1, int i2, int i3);
+extern void add_poly_texmap(int index, double u, double v);
 extern void end_poly_object();
 
 extern void set_output_resolution(int x, int y);
@@ -85,7 +86,7 @@ extern void set_global_ambience(double r, double g, double b);
 %token <stringval> STRING
 %token RESOLUTION EYEPOINT LOOKAT UP FOVX FOVY ASPECT
 %token OBJECT QUADRIC POLY SPHERE
-%token VERTEX
+%token VERTEX TEX
 %token PROPERTY AMBIENT DIFFUSE SPECULAR MIRROR
 %token AMBIENCE BACKGROUND
 %token LIGHT DIRECTION COLOR
@@ -253,7 +254,8 @@ sphere_surface
 polygon_surface
     : OBJECT STRING POLY 
       {	printf("object poly\n"); begin_poly_object($2); free($2); }
-      vertex_section polygon_section
+      vertex_section texture_map_section
+	   polygon_section
 	  { end_poly_object(); }
     ;
 
@@ -312,6 +314,21 @@ one_index
 	{ printf("polygon idx %d\n", $1); add_poly_index($1); }
 	;
 */
+
+texture_map_section
+    : texture_maps
+    ;
+
+texture_maps
+    : texture_maps one_texture_map
+    | one_texture_map
+	| /*epsilon*/
+    ;
+
+one_texture_map
+    : TEX index realVal realVal
+      { printf("texture %d %f %f\n", $2, $3, $4); add_poly_texmap($2, $3, $4); }
+    ;
 
 property_section
     : properties

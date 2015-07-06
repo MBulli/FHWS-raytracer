@@ -3,6 +3,7 @@
 #include "Color.h"
 #include "lodepng.h"
 #include <iostream>
+#include <cassert>
 
 
 Texture::~Texture()
@@ -21,14 +22,20 @@ void Texture::load()
 
 const Color Texture::getTexel(double u, double v) const
 {
-	int pixelU = floor(u * imgWidth);
-	int pixelV = floor(v * imgHeight);
+	assert((0 <= u && u <= 1));
+	assert((0 <= v && v <= 1)); // u & v must be in [0;1]
+
+	int pixelU = ceil(u * imgWidth);
+	int pixelV = ceil(v * imgHeight);
 
 	return getPixel(pixelU, pixelV);
 }
 
 const Color Texture::getPixel(int x, int y) const
 {
+	assert((0 <= x && x <= imgWidth));
+	assert((0 <= y && y <= imgHeight)); // u & v must be in [0;1]
+
 	unsigned char R = imgData.at(y * 4 + x * 4 + 0);
 	unsigned char G = imgData.at(y * 4 + x * 4 + 1);
 	unsigned char B = imgData.at(y * 4 + x * 4 + 2);

@@ -54,7 +54,7 @@ Color Ray::shade(const vector<ObjektPtr> &objects, const vector<Light> &lights, 
 	} else {
 		intersection_position = intersectionPoint(min_t);
 		normal = closest->get_normal(intersection_position);
-		cur_color = closest->get_color(intersection_position, globalAmbient);
+		cur_color = closest->get_color(*this, intersection_position, globalAmbient);
 
 		reflected_ray = reflect(intersection_position, normal);
 

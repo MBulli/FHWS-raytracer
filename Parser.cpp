@@ -14,6 +14,7 @@ std::vector<Light> lights;
 
 PolyObjectPtr currentPolyObject = nullptr;
 vector<Vector> currentPolyVertices;
+map<int, Vector> currentTexMappings;
 
 int resolutionX = 1250;
 int resolutionY = 1250;
@@ -183,7 +184,11 @@ extern "C" {
 		Vector& v1 = currentPolyVertices.at(i1-1);
 		Vector& v2 = currentPolyVertices.at(i2-1);
 
-		currentPolyObject->addTriangle(v0, v1, v2);
+		Vector& t0 = currentTexMappings[i0];
+		Vector& t1 = currentTexMappings[i1];
+		Vector& t2 = currentTexMappings[i2];
+
+		currentPolyObject->addTriangle(v0, v1, v2, t0, t1, t2);
 	}
 
 	void add_poly_rectangle(int i0, int i1, int i2, int i3)	{
@@ -192,15 +197,24 @@ extern "C" {
 		Vector& v2 = currentPolyVertices.at(i2-1);
 		Vector& v3 = currentPolyVertices.at(i3-1);
 
-		currentPolyObject->addTriangle(v0, v1, v2);
-		currentPolyObject->addTriangle(v2, v3, v0);
+		Vector& t0 = currentTexMappings[i0];
+		Vector& t1 = currentTexMappings[i1];
+		Vector& t2 = currentTexMappings[i2];
+		Vector& t3 = currentTexMappings[i3];
+
+		currentPolyObject->addTriangle(v0, v1, v2, t0, t1, t2);
+		currentPolyObject->addTriangle(v2, v3, v0, t2, t3, t0);
+	}
+
+	void add_poly_texmap(int index, double u, double v)	{
+		currentTexMappings[index] = Vector(u, v, 0);
 	}
 
 	void end_poly_object() {
 		rawObjects.push_back(currentPolyObject);
 		currentPolyObject = nullptr;
 		currentPolyVertices.clear();
-		currentPolyVertices.shrink_to_fit();
+		currentTexMappings.clear();
 	}
 }
 
