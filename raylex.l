@@ -37,6 +37,7 @@ diffuse { return(DIFFUSE); }
 specular { return(SPECULAR); }
 mirror { return(MIRROR); }
 texture { return(TEXTURE); }
+refraction { return(REFRACTION); }
 ambience { return(AMBIENCE); }
 background { return(BACKGROUND); }
 light { return(LIGHT); }

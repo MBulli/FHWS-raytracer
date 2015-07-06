@@ -143,6 +143,6 @@ double Triangle::intersect(const Ray& ray, ObjektConstPtr* outChild) const
 		return -1.0;
 	}
 
-	return dist;
+	return dist > 0.001 ? dist : -1;
 }
 

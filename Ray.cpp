@@ -27,7 +27,7 @@ Color Ray::shade(const vector<ObjektPtr> &objects, const vector<Light> &lights, 
 	double min_t = DBL_MAX, t;
 
 	Vector intersection_position, normal;
-	Ray lv, reflected_ray;
+	Ray lv, reflected_ray, refracted_ray;
 	bool something_intersected = false;
 
 	for (ObjektConstPtr obj : objects)
@@ -57,6 +57,7 @@ Color Ray::shade(const vector<ObjektPtr> &objects, const vector<Light> &lights, 
 		cur_color = closest->get_color(*this, intersection_position, globalAmbient);
 
 		reflected_ray = reflect(intersection_position, normal);
+		refracted_ray = refraction(intersection_position, normal, closest);
 
 		for (vector<Light>::const_iterator li = lights.begin(); li != lights.end(); ++li) {
 			lv.setDirection(li->getDirection());
@@ -83,6 +84,19 @@ Color Ray::shade(const vector<ObjektPtr> &objects, const vector<Light> &lights, 
 			Color mirror_color = reflected_ray.shade(objects, lights, background, globalAmbient);
 			mirror_color = mirror_color.scmpy(closest->getProperty().getMirror());
 			cur_color = mirror_color.addcolor(cur_color);
+
+
+			if (this->currentRefractionIndex != refracted_ray.currentRefractionIndex)
+			{
+				// if total internal reflection
+				if (!isnan(refracted_ray.getDirection().x))
+				{
+					Color refrac_color = refracted_ray.shade(objects, lights, background, globalAmbient);
+					refrac_color = refrac_color.scmpy(closest->getProperty().getRefraction());
+					cur_color = cur_color.addcolor(refrac_color);
+				}
+			}
+
 		}
 	}
 	return(cur_color);
@@ -122,7 +136,7 @@ Color Ray::shaded_color(const Light *light, Ray &reflectedray, Vector &normal, O
 		specular =  light->getColor().scmpy(spec);
 		reflected_color = reflected_color.addcolor(specular);
 	}
-
+	
 	return reflected_color;
 } /* shaded_color() */
 
@@ -149,5 +163,33 @@ Ray Ray::reflect(Vector &origin, Vector &normal)
 	return(reflection);
 } /* reflect() */
 
+Ray Ray::refraction(Vector& origin, Vector& normal, ObjektConstPtr object)
+{
+	const double n1 = currentRefractionIndex;
+	const double n2 = object->getProperty().getRefractionIndex(); // brechungs index
+
+	const double n = n1 / n2;
+	const double cosI = normal.dot(this->getDirection());
+	const double sinT2 = n * n * (1.0 - cosI * cosI);
+
+	if (sinT2 > 1.0)
+	{
+		// total internal reflection
+		// theres no transmission vector
+		// see http://www.flipcode.com/archives/reflection_transmission.pdf
+		return Ray(Vector(NAN, NAN, NAN), Vector(NAN, NAN, NAN), 1);
+	}
+
+	const Vector x = this->getDirection().svmpy(n);
+	const Vector y = normal.svmpy(n + sqrt(1.0 - sinT2));
+	const Vector t = x.vsub(y); // refraction direction
+
+	Ray refraction;
+	refraction.origin = origin;
+	refraction.direction = t.normalize();
+	refraction.currentRefractionIndex = n2;
+	refraction.depth = this->depth + 1;
+	return refraction;
+}
 
 

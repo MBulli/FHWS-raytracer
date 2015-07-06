@@ -53,5 +53,5 @@ double SphereObject::intersect(const Ray& ray, ObjektConstPtr* outChild) const
 	double t2 = (-b - sqrt(D)) / 2*a;
 
 	double t = std::min(t1, t2);
-	return t;
+	return t > 0.001 ? t : -1;
 }

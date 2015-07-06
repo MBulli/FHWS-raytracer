@@ -102,6 +102,7 @@ diffuse	 0.7	0.7	0.7
 specular 1.0	4
 mirror	 0.8
 texture null
+refraction 0 1
 
 # Oberflaechenbeschaffenheit 2
 property p2
@@ -110,6 +111,7 @@ diffuse	 0.5	0.5	0.5
 specular 1.0	4
 mirror	 0.7
 texture null
+refraction 0 1
 
 # Oberflaechenbeschaffenheit 3
 property p3
@@ -118,7 +120,15 @@ diffuse  0.1	0.6	0.1
 specular 1.0	4
 mirror	 0.2
 texture null
+refraction 0 1
 
+property p4
+ambient  0.0    0.0     0.0	# leicht blaeulich Filter
+diffuse  0.0	0.0		0.0	# gruen
+specular 0.0	1
+mirror	 0.0
+texture null
+refraction 1.0 1.1
 
 #
 # Lichtquelle 1
@@ -151,6 +161,6 @@ object	 g1	 p3
 object	 g2	 p1
 object	 g3	 p2
 object	 g4	 p3
-object	 g5	 p2
+object	 g5	 p4
 object	 g6	 p3
 object	 g7	 p1
