@@ -116,12 +116,18 @@ extern "C" {
 		fprintf(stderr, "  adding sphere %s midpoint=(%f, %f, %f) r=%f", n, xm, ym, zm, r);
 
 		SphereObjectPtr sphere = make_shared<SphereObject>(n, Vector(xm, ym, zm), r);
+		if (r == 50) {
+			TexturePtr tex = make_shared<Texture>("chess.png");
+			tex->load();
+			sphere->setTexture(tex);
+		}
+
 		rawObjects.push_back(sphere);
 	};
-	void add_property(char *n, double ar, double ag, double ab, double r, double g, double b, double s, double m) {
+	void add_property(char *n, double ar, double ag, double ab, double r, double g, double b, double s, double shininess, double m) {
 		fprintf(stderr, "  adding prop %f %f %f %f %f\n", r, g, b, s, m);
 
-		PropertyPtr prop = make_shared<Property>(n, Color(ar, ag, ab), Color(r, g, b), s, m);
+		PropertyPtr prop = make_shared<Property>(n, Color(ar, ag, ab), Color(r, g, b), s, shininess, m);
 		properties.push_back(prop);
 	};
 	void add_objekt(char *ns, char *np) {

@@ -44,7 +44,7 @@ static int yyerror(char *s)
 }
 
 struct {
-	double ar,ag,ab, r, g, b, s, m;
+	double ar,ag,ab, r, g, b, specular, specShininess, mirror;
 	} prop;
 
 struct {
@@ -54,7 +54,7 @@ struct {
 int yylex();
 extern void add_quadric(char *n, double a, double b, double c, double d, double e, double f, double g, double h, double j, double k);
 extern void add_sphere(char *n, double xm, double ym, double zm, double r);
-extern void add_property(char *n, double ar, double ag, double ab, double r, double g, double b, double s, double m);
+extern void add_property(char *n, double ar, double ag, double ab, double r, double g, double b, double s, double shininess, double m);
 extern void add_objekt(char *ns, char *np);
 extern void add_light(char *n, double dirx, double diry, double dirz, double colr, double colg, double colb);
 
@@ -325,7 +325,7 @@ properties
 one_property
     : PROPERTY STRING ambient diffuse specular mirror
 	{
-		add_property($2, prop.ar, prop.ag, prop.ab, prop.r, prop.g, prop.b, prop.s, prop.m); 
+		add_property($2, prop.ar, prop.ag, prop.ab, prop.r, prop.g, prop.b, prop.specular, prop.specShininess, prop.mirror); 
 		free($2);
 	}
     ;
@@ -351,15 +351,15 @@ diffuse
 specular
     : SPECULAR  zeroToOneVal  realVal 
       { 
-	  // TODO what is the realVal ?
-		prop.s = $2;
+		prop.specular = $2;
+		prop.specShininess = $3;
       }
     ;
 
 mirror
     : MIRROR zeroToOneVal
       { 
-		prop.m = $2;
+		prop.mirror = $2;
       }
     ;
 

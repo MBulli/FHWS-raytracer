@@ -179,7 +179,7 @@ static int yyerror(char *s)
 }
 
 struct {
-	double ar,ag,ab, r, g, b, s, m;
+	double ar,ag,ab, r, g, b, specular, specShininess, mirror;
 	} prop;
 
 struct {
@@ -189,7 +189,7 @@ struct {
 int yylex();
 extern void add_quadric(char *n, double a, double b, double c, double d, double e, double f, double g, double h, double j, double k);
 extern void add_sphere(char *n, double xm, double ym, double zm, double r);
-extern void add_property(char *n, double ar, double ag, double ab, double r, double g, double b, double s, double m);
+extern void add_property(char *n, double ar, double ag, double ab, double r, double g, double b, double s, double shininess, double m);
 extern void add_objekt(char *ns, char *np);
 extern void add_light(char *n, double dirx, double diry, double dirz, double colr, double colg, double colb);
 
@@ -1690,7 +1690,7 @@ yyreduce:
   case 58:
 
     {
-		add_property((yyvsp[(2) - (6)].stringval), prop.ar, prop.ag, prop.ab, prop.r, prop.g, prop.b, prop.s, prop.m); 
+		add_property((yyvsp[(2) - (6)].stringval), prop.ar, prop.ag, prop.ab, prop.r, prop.g, prop.b, prop.specular, prop.specShininess, prop.mirror); 
 		free((yyvsp[(2) - (6)].stringval));
 	;}
     break;
@@ -1716,15 +1716,15 @@ yyreduce:
   case 61:
 
     { 
-	  // TODO what is the realVal ?
-		prop.s = (yyvsp[(2) - (3)].floatval);
+		prop.specular = (yyvsp[(2) - (3)].floatval);
+		prop.specShininess = (yyvsp[(3) - (3)].floatval);
       ;}
     break;
 
   case 62:
 
     { 
-		prop.m = (yyvsp[(2) - (2)].floatval);
+		prop.mirror = (yyvsp[(2) - (2)].floatval);
       ;}
     break;
 

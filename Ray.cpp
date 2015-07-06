@@ -117,9 +117,7 @@ Color Ray::shaded_color(const Light *light, Ray &reflectedray, Vector &normal, O
 
 	if (1.0 + spec > 1.0) {
 
-		spec = spec * spec;
-		spec = spec * spec;
-		spec = spec * spec;
+		spec = pow(spec, obj->getProperty().getShininess());
 		spec *= obj->getProperty().getSpecular();
 		specular =  light->getColor().scmpy(spec);
 		reflected_color = reflected_color.addcolor(specular);
