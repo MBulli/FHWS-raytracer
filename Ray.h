@@ -11,14 +11,14 @@ class Ray
 	int	 depth;
 	double currentRefractionIndex;
 
-	Color shaded_color(const Light *light, Ray& reflectedray, Vector& normal, ObjektConstPtr obj);
+	Color shaded_color(const LightConstPtr& light, Ray& reflectedray, Vector& normal, ObjektConstPtr obj);
 
 public:
 	Ray(void) : direction(), origin(), depth (0), currentRefractionIndex(1.0) {};
 	Ray(const Vector &dir, const Vector &orig, int d) : direction(dir), origin(orig), depth (d), currentRefractionIndex(1.0) {};
 
-	Color shade(const std::vector<ObjektPtr>& objects,
-				const std::vector<Light>& lights,
+	Color shade(const std::vector<ObjektConstPtr>& objects,
+				const std::vector<LightConstPtr>& lights,
 				const Color& background,
 				const Color& globalAmbient);
 

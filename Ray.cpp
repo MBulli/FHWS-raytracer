@@ -20,7 +20,7 @@ using namespace std;
 /*   bereits bestimmten Farbwerten.                                           */
 /* Rueckgabeparameter: Farbe, die auf diesem Strahl zu sehen ist              */
 /*----------------------------------------------------------------------------*/
-Color Ray::shade(const vector<ObjektPtr> &objects, const vector<Light> &lights, const Color& background, const Color& globalAmbient)
+Color Ray::shade(const vector<ObjektConstPtr> &objects, const vector<LightConstPtr> &lights, const Color& background, const Color& globalAmbient)
 {
 	ObjektConstPtr closest = nullptr;
 	Color cur_color; 
@@ -30,7 +30,7 @@ Color Ray::shade(const vector<ObjektPtr> &objects, const vector<Light> &lights, 
 	Ray lv, reflected_ray, refracted_ray;
 	bool something_intersected = false;
 
-	for (ObjektConstPtr obj : objects)
+	for (const ObjektConstPtr& obj : objects)
 	{
 		ObjektConstPtr child = nullptr;
 		t = obj->intersect(*this, &child);
@@ -59,12 +59,12 @@ Color Ray::shade(const vector<ObjektPtr> &objects, const vector<Light> &lights, 
 		reflected_ray = reflect(intersection_position, normal);
 		refracted_ray = refraction(intersection_position, normal, closest);
 
-		for (vector<Light>::const_iterator li = lights.begin(); li != lights.end(); ++li) {
+		for (const LightConstPtr& li : lights) {
 			lv.setDirection(li->getDirection());
 			lv.setOrigin(intersection_position);
 			something_intersected = false;
 
-			for (ObjektConstPtr obj : objects)
+			for (const ObjektConstPtr& obj : objects)
 			{
 				ObjektConstPtr child = nullptr;
 				t = obj->intersect(lv, &child);
@@ -75,7 +75,7 @@ Color Ray::shade(const vector<ObjektPtr> &objects, const vector<Light> &lights, 
 			}
 
 			if (something_intersected == false) {
-				Color new_color = shaded_color(&(*li), reflected_ray, normal, closest);
+				Color new_color = shaded_color(li, reflected_ray, normal, closest);
 				cur_color = cur_color.addcolor(new_color);
 			} 
 		}
@@ -113,7 +113,7 @@ Color Ray::shade(const vector<ObjektPtr> &objects, const vector<Light> &lights, 
 /* Rueckgabeparameter: errechnete Farbe                                       */
 /*----------------------------------------------------------------------------*/
 
-Color Ray::shaded_color(const Light *light, Ray &reflectedray, Vector &normal, ObjektConstPtr obj)
+Color Ray::shaded_color(const LightConstPtr& light, Ray &reflectedray, Vector &normal, ObjektConstPtr obj)
 {
 	Color reflected_color;
 	Color specular;

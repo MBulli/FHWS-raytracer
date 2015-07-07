@@ -24,7 +24,7 @@ Color Color::outprodc(const Color &c) const
 /* scmpy   skaliert (dimmt) eine Farbe                                        */
 /*----------------------------------------------------------------------------*/
 
-Color Color::scmpy(double s)
+Color Color::scmpy(double s) const
 {
 	return Color(r*s, g*s, b*s);
 } /* scmpy */

@@ -18,7 +18,7 @@ public:
 
 	const std::vector<PropertyPtr>& getProperties() const;
 	const std::vector<ObjektPtr>& getObjects()      const;
-	const std::vector<Light>& getLights()		    const;
+	const std::vector<LightPtr>& getLights()	    const;
 
 	int getResoultionX() const;
 	int getResoultionY() const;

@@ -10,7 +10,7 @@ using namespace std;
 std::vector<PropertyPtr> properties;
 std::vector<ObjektPtr> rawObjects; // objects without property
 std::vector<ObjektPtr> objekte;
-std::vector<Light> lights;
+std::vector<LightPtr> lights;
 
 PolyObjectPtr currentPolyObject = nullptr;
 vector<Vector> currentPolyVertices;
@@ -118,7 +118,9 @@ extern "C" {
 	// light
 	void add_light(char *n, double dirx, double diry, double dirz, double colr, double colg, double colb) {
 		fprintf(stderr, "  adding light %f %f %f %f %f %f\n", dirx, diry, dirz, colr, colg, colb);
-		lights.push_back(Light(Vector(dirx, diry, dirz).normalize(), Color(colr, colg, colb)));
+
+		LightPtr light = make_shared<Light>(Vector(dirx, diry, dirz).normalize(), Color(colr, colg, colb));
+		lights.push_back(light);
 	};
 
 	// geometry
@@ -239,7 +241,7 @@ extern "C" {
 // GETTER methods
 const std::vector<PropertyPtr>& Parser::getProperties() const { return properties; }
 const std::vector<ObjektPtr>&   Parser::getObjects()	const { return objekte; }
-const std::vector<Light>&       Parser::getLights()		const { return lights; }
+const std::vector<LightPtr>&    Parser::getLights()		const { return lights; }
 
 int Parser::getResoultionX() const { return resolutionX; }
 int Parser::getResoultionY() const { return resolutionY; }

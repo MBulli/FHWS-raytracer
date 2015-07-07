@@ -12,7 +12,7 @@ public:
 
 	Color addcolor(const Color &c) const;
 	Color outprodc(const Color &c) const;
-	Color scmpy(double s);
+	Color scmpy(double s) const;
 
 };
 

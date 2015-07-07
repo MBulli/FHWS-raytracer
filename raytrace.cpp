@@ -41,8 +41,8 @@ struct Config {
 	double apertureRadius = 0;
 	double focalDistance = 0;
 
-	std::vector<ObjektPtr> objects;
-	std::vector<Light> lights;
+	std::vector<ObjektConstPtr> objects;
+	std::vector<LightConstPtr> lights;
 
 	Image output;
 

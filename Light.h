@@ -10,8 +10,9 @@ public:
 	Light(void): direction(), color() {};
 	Light(const Vector &v, const Color &c): direction(v), color(c) {};
 
-	Vector getDirection() const { return direction; };
-	Color getColor() const { return color; };
+	const Vector& getDirection() const { return direction; };
+	const Color& getColor() const { return color; };
 };
 
-
+typedef std::shared_ptr<Light> LightPtr;
+typedef std::shared_ptr<const Light> LightConstPtr;
