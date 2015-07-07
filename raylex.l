@@ -24,6 +24,9 @@ lookat { return(LOOKAT); }
 fovx { return(FOVX); }
 fovy { return(FOVY); }
 aspect { return(ASPECT); }
+apertureRadius { return(APERTURE_RADIUS); }
+focalDistance { return(FOCAL_DISTANCE); }
+dofSamples { return(DOF_SAMPLES); }
 object { return(OBJECT); }
 poly { return(POLY); }
 polygon { return(POLY); } /* equivalent spelling */

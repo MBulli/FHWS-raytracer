@@ -1,4 +1,4 @@
-resolution    1920    1080		# Bildbreite Bildhoehe (in Pixeln)
+#resolution    1920    1080		# Bildbreite Bildhoehe (in Pixeln)
 resolution    800     450		# Bildbreite Bildhoehe (in Pixeln)
 background	0.0	0.0	0.0	# Hintergrundlicht
 
@@ -8,7 +8,9 @@ up            0.0     1.0     0.0       # Up-Vektor gibt an, wo oben ist
 aspect          1.7777777777777777777777777777778
 fovy           55			# Field-of-view-Winkel
 
-
+apertureRadius 2
+focalDistance 150
+dofSamples 600
 
 #
 #------------------------------------------------------------------------------*

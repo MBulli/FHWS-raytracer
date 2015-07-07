@@ -28,6 +28,10 @@ double fieldOfViewX = NAN; // in rad
 double fieldOfViewY = NAN; // in rad
 double aspect;
 
+double DOFSamples;
+double apatureRadius;
+double focalDistance;
+
 extern "C" {
 	extern FILE *yyin;
 	int yyparse();
@@ -98,6 +102,17 @@ extern "C" {
 	}
 	void set_global_ambience(double r, double g, double b) {
 		globalAmbient = Color(r, g, b);
+	}
+
+	// Depth of field
+	void set_apertureRadius(double r) {
+		apatureRadius = r;
+	}
+	void set_focalDistance(double d) {
+		focalDistance = d;
+	}
+	void set_dofSamples(int s) {
+		DOFSamples = s;
 	}
 
 	// light
@@ -238,3 +253,6 @@ const Vector& Parser::getUp()           const { return up; }
 double        Parser::getFieldOfViewX() const { return fieldOfViewX; }
 double        Parser::getFieldOfViewY() const { return fieldOfViewY; }
 double		  Parser::getAspectRatio()  const { return aspect; }
+double        Parser::getDOFSamples()	const { return DOFSamples; }
+double		  Parser::getApatureRadius()   const { return apatureRadius; }
+double        Parser::getFocalDistance()   const { return focalDistance; }

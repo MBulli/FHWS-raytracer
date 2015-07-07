@@ -75,6 +75,10 @@ extern void set_fovx(double fovxInDeg);
 extern void set_fovy(double fovyInDeg);
 extern void set_aspect(double a);
 extern void set_global_ambience(double r, double g, double b);
+
+extern void set_apertureRadius(double r);
+extern void set_focalDistance(double d);
+extern void set_dofSamples(int s);
 %}
 
 
@@ -91,11 +95,12 @@ extern void set_global_ambience(double r, double g, double b);
 %token PROPERTY AMBIENT DIFFUSE SPECULAR MIRROR TEXTURE REFRACTION
 %token AMBIENCE BACKGROUND
 %token LIGHT DIRECTION COLOR
+%token FOCAL_DISTANCE DOF_SAMPLES APERTURE_RADIUS
 
 %%
 
 scene 
-    : picture_parameters  some_viewing_parameters  global_lighting  geometry
+    : picture_parameters  some_viewing_parameters dof_parameter global_lighting  geometry
     ;
 
 some_viewing_parameters
@@ -143,6 +148,11 @@ viewing_parameter
     | aspect
     | up
     ;
+
+dof_parameter
+	: aperture_radius focal_distance dof_samples
+	| /* epsillon */
+	;
 
 resolution
     : RESOLUTION index index
@@ -199,6 +209,19 @@ global_lighting
     : AMBIENCE colorVal colorVal colorVal
       { printf("ambience %f %f %f\n", $2, $3, $4);  set_global_ambience($2, $3, $4); }
     ;
+
+focal_distance
+	: FOCAL_DISTANCE realVal { set_focalDistance($2); }
+	;
+	
+aperture_radius
+	: APERTURE_RADIUS realVal { set_apertureRadius($2);	}
+	;
+	
+dof_samples
+	: DOF_SAMPLES index	{ set_dofSamples($2); }
+	;
+	
 
 geometry 
     : 

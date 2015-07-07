@@ -37,9 +37,9 @@ struct Config {
 	Color backgroundColor;
 	Color globalAmbient;
 
-	int depthOfFieldSamples = 600;
-	double apertureRadius = 2;
-	double focalDistance = 150;
+	int depthOfFieldSamples = 0;
+	double apertureRadius = 0;
+	double focalDistance = 0;
 
 	std::vector<ObjektPtr> objects;
 	std::vector<Light> lights;
@@ -82,12 +82,50 @@ struct Config {
 		backgroundColor = p.getBackgroundColor();
 		globalAmbient = p.getGlobalAmbient();
 
+		depthOfFieldSamples = p.getDOFSamples();
+		apertureRadius = p.getApatureRadius();
+		focalDistance = p.getFocalDistance();
+
 		objects.assign(p.getObjects().begin(), p.getObjects().end());
 		lights.assign(p.getLights().begin(), p.getLights().end());
 
 		output = Image(resolutionX, resolutionY);
 	}
 };
+
+
+Color traceDOFRay(Ray& ray, const Config& c)
+{
+	static std::default_random_engine generator;
+	static uniform_real_distribution<double> distribution(0, 1);
+	static auto random = std::bind(distribution, generator);
+
+
+	const Vector focalPoint = ray.intersectionPoint(c.focalDistance);
+
+	Color accColor;
+	for (int i = 0; i < c.depthOfFieldSamples; i++)
+	{
+		const double a = random();
+		const double b = random();
+
+		const double x = b*c.apertureRadius*cos(2 * M_PI*a);
+		const double y = b*c.apertureRadius*sin(2 * M_PI*a);
+
+		const Vector randPoint = c.eyePoint
+			.vadd(c.xdir.svmpy(x)
+			.vadd(c.ydir.svmpy(y)));
+
+		ray.setOrigin(randPoint);
+		ray.setDirection(focalPoint.vsub(ray.getOrigin()).normalize());
+
+		const Color color = ray.shade(c.objects, c.lights, c.backgroundColor, c.globalAmbient);
+		accColor = accColor.addcolor(color);
+	}
+
+	accColor = accColor.scmpy(1.0 / c.depthOfFieldSamples);
+	return accColor;
+}
 
 void tracePartition(Config& c, Parser& parser, int num_threads, int startScanline) 
 {
@@ -106,10 +144,6 @@ void tracePartition(Config& c, Parser& parser, int num_threads, int startScanlin
 	
 	Ray	ray(Vector(), c.eyePoint, 0);
 
-	static std::default_random_engine generator;
-	static uniform_real_distribution<double> distribution(0, 1);
-	static auto random = std::bind(distribution, generator);
-
 	for (int scanline = startScanline; scanline < c.resolutionY; scanline += num_threads) {
 		printf("%4d\r", c.resolutionY - scanline);
 
@@ -120,34 +154,20 @@ void tracePartition(Config& c, Parser& parser, int num_threads, int startScanlin
 			ray.setOrigin(c.eyePoint);
 			ray.setDirection(renderPoint.vsub(ray.getOrigin()).normalize());
 			
-			const Vector focalPoint = ray.intersectionPoint(c.focalDistance);
-
-			Color accColor;
-			for (int i = 0; i < c.depthOfFieldSamples; i++)
+			Color color;
+			if (c.apertureRadius != 0.0)
 			{
-				const double a = random();
-				const double b = random();
-				
-				const double x = b*c.apertureRadius*cos(2 * M_PI*a);
-				const double y = b*c.apertureRadius*sin(2 * M_PI*a);
-
-				const Vector randPoint = c.eyePoint
-							    		    .vadd(c.xdir.svmpy(x)
-									        .vadd(c.ydir.svmpy(y)));
-
-				ray.setOrigin(randPoint);
-				ray.setDirection(focalPoint.vsub(ray.getOrigin()).normalize());
-
-				const Color color = ray.shade(objects, lights, backgroundColor, globalAmbient);
-				accColor = accColor.addcolor(color);
+				color = traceDOFRay(ray, c);
 			}
-
-			accColor = accColor.scmpy(1.0 / c.depthOfFieldSamples);
-
+			else
+			{
+				color = ray.shade(c.objects, c.lights, c.backgroundColor, c.globalAmbient);
+			}
+			
 			c.output.set(sx, scanline,
-				accColor.r > 1.0 ? 255 : int(255 * accColor.r),
-				accColor.g > 1.0 ? 255 : int(255 * accColor.g),
-				accColor.b > 1.0 ? 255 : int(255 * accColor.b));
+				color.r > 1.0 ? 255 : int(255 * color.r),
+				color.g > 1.0 ? 255 : int(255 * color.g),
+				color.b > 1.0 ? 255 : int(255 * color.b));
 
 			renderPoint = renderPoint.vadd(c.dx);
 		}
@@ -172,6 +192,10 @@ int main(int argc, _TCHAR* argv[])
 	std::thread t[num_threads];
 	auto totalRunTime = std::chrono::system_clock::now();
 	
+	if (config.apertureRadius != 0.0)
+	{
+		cout << "Will render depth of field with " << config.depthOfFieldSamples << " samples per ray!! (Take a coffee break)" << endl;
+	}
 	cout << "Will run on " << num_threads << " threads." << endl;
 
 	for (int i = 0; i < num_threads; ++i) {

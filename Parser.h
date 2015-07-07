@@ -32,5 +32,9 @@ public:
 	double        getFieldOfViewX() const; // in rad; NaN if not set
 	double        getFieldOfViewY() const; // in rad; NaN if not set
 	double		  getAspectRatio()  const;
+
+	double        getDOFSamples()	const;
+	double		  getApatureRadius()   const;
+	double        getFocalDistance()   const;
 };
 
