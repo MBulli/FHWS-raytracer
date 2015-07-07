@@ -8,7 +8,7 @@ up            0.0     1.0     0.0       # Up-Vektor gibt an, wo oben ist
 aspect          1.7777777777777777777777777777778
 fovy           55			# Field-of-view-Winkel
 
-apertureRadius 2
+apertureRadius 0
 focalDistance 150
 dofSamples 600
 

@@ -4,6 +4,8 @@
 #include "float.h"
 
 #include "Objekt.h"
+#include <functional>
+#include <random>
 
 using namespace std;
 
@@ -81,11 +83,24 @@ Color Ray::shade(const vector<ObjektConstPtr> &objects, const vector<LightConstP
 		}
 
 		if (depth < 5) {
-			Color mirror_color = reflected_ray.shade(objects, lights, background, globalAmbient);
-			mirror_color = mirror_color.scmpy(closest->getProperty().getMirror());
-			cur_color = mirror_color.addcolor(cur_color);
 
+			// Reflection
+			const double mirror = closest->getProperty().getMirror();
+			if (mirror != 0.0)
+			{
+				Color mirrorColor;
+				const double glossy = closest->getProperty().getGlossy();
+				if (glossy != 0.0)	{
+					mirrorColor = glossyReflectionShade(reflected_ray, normal, closest, objects, lights, background, globalAmbient);
+				}
+				else {
+					mirrorColor = reflected_ray.shade(objects, lights, background, globalAmbient);
+				}
 
+				cur_color = cur_color.addcolor(mirrorColor.scmpy(mirror));
+			}
+			
+			// Reflaction
 			if (this->currentRefractionIndex != refracted_ray.currentRefractionIndex)
 			{
 				// if total internal reflection
@@ -154,13 +169,13 @@ Ray Ray::reflect(Vector &origin, Vector &normal)
 	Ray	 reflection;
 	double	 incdot;
 
-	incdot = normal.dot(direction);
+	incdot = normal.dot(this->direction);
 	reflection.origin = origin;
 	reflection.direction = normal.svmpy(2.0*incdot);
-	reflection.direction = direction.vsub(reflection.direction).normalize();
+	reflection.direction = this->direction.vsub(reflection.direction).normalize();
 
 	reflection.depth = depth + 1;
-	return(reflection);
+	return reflection;
 } /* reflect() */
 
 Ray Ray::refraction(Vector& origin, Vector& normal, ObjektConstPtr object)
@@ -192,4 +207,39 @@ Ray Ray::refraction(Vector& origin, Vector& normal, ObjektConstPtr object)
 	return refraction;
 }
 
+Color Ray::glossyReflectionShade(Ray& reflectedRay, const Vector& normal, const ObjektConstPtr& object, const std::vector<ObjektConstPtr>& objects, const std::vector<LightConstPtr>& lights, const Color& background, const Color& globalAmbient)
+{
+	static int glossySamples = 10;
+	double glossy = object->getProperty().getGlossy();
+
+	static std::default_random_engine generator;
+	static uniform_real_distribution<double> distribution(0, 1);
+	static auto random = std::bind(distribution, generator);
+
+	// glossy reflection
+	const Vector reflZ = reflectedRay.getDirection();
+	const Vector reflX = reflZ.cross(normal).normalize();
+	const Vector reflY = reflZ.cross(reflX).normalize();
+
+	Color accMirrColor;
+	for (int i = 0; i < glossySamples; i++)
+	{
+		const double angle = random() * 2 * M_PI;
+		const double radius = random() * glossy;
+		const Vector r = reflZ
+			.vadd(reflX.svmpy(radius*cos(angle)))
+			.vadd(reflY.svmpy(radius*sin(angle)));
+
+		// if reflected ray intersects with object, skip it
+		if (normal.dot(r) < 0)
+			continue;
+
+		reflectedRay.setDirection(r.normalize());
+
+		Color clr = reflectedRay.shade(objects, lights, background, globalAmbient);
+		accMirrColor = accMirrColor.addcolor(clr);
+	}
+
+	return accMirrColor.scmpy(1.0 / glossySamples);
+}
 

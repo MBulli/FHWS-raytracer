@@ -33,6 +33,14 @@ public:
 	Ray reflect(Vector &origin, Vector &normal);
 	Ray refraction(Vector& origin, Vector& normal, ObjektConstPtr object);
 
+	Color glossyReflectionShade(Ray& reflectedRay, 
+								const Vector& normal,
+								const ObjektConstPtr& object,
+								const std::vector<ObjektConstPtr>& objects,
+								const std::vector<LightConstPtr>& lights,
+								const Color& background,
+								const Color& globalAmbient);
+
 	Vector intersectionPoint(double t) const { return origin.vadd(direction.svmpy(t)); }
 };
 
