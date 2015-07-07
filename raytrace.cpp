@@ -89,28 +89,28 @@ struct Config {
 	}
 };
 
-void tracePartition(Config& c, Parser& parser, int index, int count) 
+void tracePartition(Config& c, Parser& parser, int num_threads, int startScanline) 
 {
 	const auto& objects = c.objects;
 	const auto& lights = c.lights;
 	const auto& backgroundColor = c.backgroundColor;
 	const auto& globalAmbient = c.globalAmbient;
 
+	// our delta y needs to skip the other thread scanlines
+	const Vector dy = c.dy.svmpy(num_threads);
+
 	Vector start = c.lookAtPoint
 					.vadd(c.xdir.svmpy(-0.5*c.width)) // move x=0 to center X
 					.vadd(c.ydir.svmpy(-0.5*c.height)) // same for y=0
-					.vadd(c.dy.svmpy(index*count)); // inital delta
+					.vadd(c.dy.svmpy(startScanline)); // inital delta
 	
 	Ray	ray(Vector(), c.eyePoint, 0);
-
-	//int start = index * count;
-	int end = index*count + count;
 
 	static std::default_random_engine generator;
 	static uniform_real_distribution<double> distribution(0, 1);
 	static auto random = std::bind(distribution, generator);
 
-	for (int scanline = index * count; scanline < end; scanline++) {
+	for (int scanline = startScanline; scanline < c.resolutionY; scanline += num_threads) {
 		printf("%4d\r", c.resolutionY - scanline);
 
 		Vector renderPoint = start;
@@ -152,7 +152,7 @@ void tracePartition(Config& c, Parser& parser, int index, int count)
 			renderPoint = renderPoint.vadd(c.dx);
 		}
 
-		start = start.vadd(c.dy);
+		start = start.vadd(dy);
 	}
 }
 
@@ -169,25 +169,17 @@ int main(int argc, _TCHAR* argv[])
 	Config config(parser);
 
 	const int num_threads = 4;
-	int partSize = 0;
-	int roundUp = static_cast<int>(remquof(config.resolutionY, num_threads, &partSize));
-
 	std::thread t[num_threads];
 	auto totalRunTime = std::chrono::system_clock::now();
 	
-	cout << "Will run on " << num_threads << " Threads each calculating " << partSize << " scanlines." << endl;
+	cout << "Will run on " << num_threads << " threads." << endl;
 
 	for (int i = 0; i < num_threads; ++i) {
-		t[i] = std::thread([&config, &parser, num_threads, i, partSize, roundUp]()
+		t[i] = std::thread([&config, &parser, num_threads, i]()
 		{
-			int count = partSize;
-			if (i == num_threads - 1) {
-				count += roundUp;
-			}
-
 			auto threadStartTime = std::chrono::system_clock::now();
 
-			tracePartition(config, parser, i, count);
+			tracePartition(config, parser, num_threads, i);
 
 			auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - threadStartTime);
 			cout << "Thread " << i << " took " << duration.count() << "ms" << endl;
