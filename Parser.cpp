@@ -136,10 +136,10 @@ extern "C" {
 		SphereObjectPtr sphere = make_shared<SphereObject>(n, Vector(xm, ym, zm), r);
 		rawObjects.push_back(sphere);
 	};
-	void add_property(char *n, double ar, double ag, double ab, double r, double g, double b, double s, double shininess, double m, char* textureFilename, double refraction, double refractionIndex) {
-		fprintf(stderr, "  adding prop %f %f %f %f %f %s %f %f\n", r, g, b, s, m, textureFilename, refraction, refractionIndex);
+	void add_property(char *n, double ar, double ag, double ab, double r, double g, double b, double s, double shininess, double m, char* textureFilename, double refraction, double refractionIndex, double glossy, int glossySamples) {
+		fprintf(stderr, "  adding prop %f %f %f %f %f %s %f %f %f %d\n", r, g, b, s, m, textureFilename, refraction, refractionIndex, glossy, glossySamples);
 
-		PropertyPtr prop = make_shared<Property>(n, Color(ar, ag, ab), Color(r, g, b), s, shininess, m, refraction, refractionIndex);
+		PropertyPtr prop = make_shared<Property>(n, Color(ar, ag, ab), Color(r, g, b), s, shininess, m, refraction, refractionIndex, glossy, glossySamples);
 
 		std::string textureFile(textureFilename);
 		if (textureFile.compare("null") != 0)

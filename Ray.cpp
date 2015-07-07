@@ -209,8 +209,8 @@ Ray Ray::refraction(Vector& origin, Vector& normal, ObjektConstPtr object)
 
 Color Ray::glossyReflectionShade(Ray& reflectedRay, const Vector& normal, const ObjektConstPtr& object, const std::vector<ObjektConstPtr>& objects, const std::vector<LightConstPtr>& lights, const Color& background, const Color& globalAmbient)
 {
-	static int glossySamples = 10;
-	double glossy = object->getProperty().getGlossy();
+	const int glossySamples = object->getProperty().getGlossySamples();
+	const double glossy = object->getProperty().getGlossy();
 
 	static std::default_random_engine generator;
 	static uniform_real_distribution<double> distribution(0, 1);
