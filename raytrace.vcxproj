@@ -103,6 +103,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <None Include="data\dflt.data" />
+    <None Include="data\dof.data" />
     <None Include="data\scene.data" />
     <None Include="data\test.data" />
     <None Include="raylex.l" />

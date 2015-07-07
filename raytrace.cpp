@@ -14,6 +14,7 @@
 #include <iostream>
 #include "Parser.h"
 #include <thread>
+#include <random>
 
 using namespace std;
 
@@ -30,11 +31,15 @@ struct Config {
 	double fovx, fovy;
 	double width, height;
 
-	Vector xdir, ydir;
+	Vector xdir, ydir, zdir;
 	Vector dx, dy;
 
 	Color backgroundColor;
 	Color globalAmbient;
+
+	int depthOfFieldSamples = 600;
+	double apertureRadius = 2;
+	double focalDistance = 150;
 
 	std::vector<ObjektPtr> objects;
 	std::vector<Light> lights;
@@ -69,6 +74,7 @@ struct Config {
 
 		xdir = lookatVector.cross(up).normalize();
 		ydir = lookatVector.cross(xdir).normalize();
+		zdir = lookatVector.normalize();
 
 		dx = xdir.svmpy(width / resolutionX);
 		dy = ydir.svmpy(height / resolutionY);
@@ -100,20 +106,48 @@ void tracePartition(Config& c, Parser& parser, int index, int count)
 	//int start = index * count;
 	int end = index*count + count;
 
+	static std::default_random_engine generator;
+	static uniform_real_distribution<double> distribution(0, 1);
+	static auto random = std::bind(distribution, generator);
+
 	for (int scanline = index * count; scanline < end; scanline++) {
-		//printf("%4d\r", c.resolutionY - scanline);
+		printf("%4d\r", c.resolutionY - scanline);
 
 		Vector renderPoint = start;
 
 		for (int sx = 0; sx < c.resolutionX; sx++) {
-			ray.setDirection(renderPoint.vsub(ray.getOrigin()).normalize());
 
-			Color color = ray.shade(objects, lights, backgroundColor, globalAmbient);
+			ray.setOrigin(c.eyePoint);
+			ray.setDirection(renderPoint.vsub(ray.getOrigin()).normalize());
+			
+			const Vector focalPoint = ray.intersectionPoint(c.focalDistance);
+
+			Color accColor;
+			for (int i = 0; i < c.depthOfFieldSamples; i++)
+			{
+				const double a = random();
+				const double b = random();
+				
+				const double x = b*c.apertureRadius*cos(2 * M_PI*a);
+				const double y = b*c.apertureRadius*sin(2 * M_PI*a);
+
+				const Vector randPoint = c.eyePoint
+							    		    .vadd(c.xdir.svmpy(x)
+									        .vadd(c.ydir.svmpy(y)));
+
+				ray.setOrigin(randPoint);
+				ray.setDirection(focalPoint.vsub(ray.getOrigin()).normalize());
+
+				const Color color = ray.shade(objects, lights, backgroundColor, globalAmbient);
+				accColor = accColor.addcolor(color);
+			}
+
+			accColor = accColor.scmpy(1.0 / c.depthOfFieldSamples);
 
 			c.output.set(sx, scanline,
-				color.r > 1.0 ? 255 : int(255 * color.r),
-				color.g > 1.0 ? 255 : int(255 * color.g),
-				color.b > 1.0 ? 255 : int(255 * color.b));
+				accColor.r > 1.0 ? 255 : int(255 * accColor.r),
+				accColor.g > 1.0 ? 255 : int(255 * accColor.g),
+				accColor.b > 1.0 ? 255 : int(255 * accColor.b));
 
 			renderPoint = renderPoint.vadd(c.dx);
 		}
@@ -125,7 +159,7 @@ void tracePartition(Config& c, Parser& parser, int index, int count)
 
 int main(int argc, _TCHAR* argv[])
 {
-	Parser parser("data/test.data");
+	Parser parser("data/scene.data");
 	if (!parser.start())
 	{
 		std::cin.get();
@@ -134,7 +168,7 @@ int main(int argc, _TCHAR* argv[])
 
 	Config config(parser);
 
-	const int num_threads = 1;
+	const int num_threads = 4;
 	int partSize = 0;
 	int roundUp = static_cast<int>(remquof(config.resolutionY, num_threads, &partSize));
 

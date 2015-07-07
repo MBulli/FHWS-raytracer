@@ -1,0 +1,76 @@
+#
+# Bild-Parameter
+#
+resolution      666    500		# Bildbreite Bildhoehe (in Pixeln)
+background	0.6	0.6	0.6		    # Hintergrundfarbe schwarz
+
+# 
+# Projektion
+#
+eyepoint     0.0	0.0	 0.0	# Auge-Koordinaten
+lookat       0.0	0.0	 1.0	# Punkt, auf den das Auge schaut
+fovx         90					# Field-of-view-Winkel
+aspect       1.333333333333				# Verhaeltnis Breite zu Hoehe
+up           0.0     1.0     0.0     # Up-Vektor gibt an, wo oben ist
+
+#
+#  Globales Licht-Informationen
+#
+ambience	1.0	0.0	0.0	# 
+
+
+#
+#  Geometriebeschreibungen
+#
+
+object s1 sphere     -20 0 60 10
+object s2 sphere     0 0 30 7
+object s3 sphere     5 0 15 5
+object s4 sphere     0 0 0 25
+
+object bg poly
+	vertex  -50  50 50
+	vertex   50  50 50
+	vertex   50 -50 50
+	vertex  -50 -50 50
+	polygon 1 2 3 4
+#
+#  Oberflaechenbeschaffenheiten
+#
+
+# Oberflaechenbeschaffenheit 1
+property prop1
+ambient  0.2    0.0     0.0	  # leicht roetlicher Filter
+diffuse	 0.7	0.7	0.7	      # helleres silbergrau
+specular 1.0	100			  # Besser wäre specular 1.0	4  
+mirror	 0.0
+texture null
+refraction 0 1
+
+property prop2
+ambient  0.2    1.0     0.0	  # leicht roetlicher Filter
+diffuse	 0.0	0.7	0.7	      # helleres silbergrau
+specular 1.0	100			  # Besser wäre specular 1.0	4  
+mirror	 0.0
+texture null
+refraction 0 1
+
+#
+#  Licht-Informationen
+#
+
+# Lichtquelle 1
+light licht1
+direction  0.0	 0.1	 -0.1
+color	   1.0	 0.5	 0.1
+
+#
+#  Objekte (Zuordnung:  Geometriebeschreibung <-> Oberflaechenbeschaffenheit
+#
+
+# Zuordnungstabelle
+object s1 prop1
+object s2 prop1
+object s3 prop1
+#object s4 prop1
+#object bg prop2

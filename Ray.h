@@ -27,7 +27,7 @@ public:
 	int getDepth() const { return depth; };
 
 	void setDirection(const Vector &v) { direction=v; };
-	void setOrigin(Vector &v) { origin=v; };
+	void setOrigin(const Vector &v) { origin=v; };
 	void setDepth(int d) { depth=d; };
 
 	Ray reflect(Vector &origin, Vector &normal);

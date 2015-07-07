@@ -1,8 +1,9 @@
-resolution    1920     1080		# Bildbreite Bildhoehe (in Pixeln)
+resolution    1920    1080		# Bildbreite Bildhoehe (in Pixeln)
+resolution    800     450		# Bildbreite Bildhoehe (in Pixeln)
 background	0.0	0.0	0.0	# Hintergrundlicht
 
 eyepoint     -100.0   150.0      150.0	# Auge-Koordinaten
-lookat        -15.0    25.0      -40.0	# Punkt, auf den das Auge schaut
+lookat        -50.0    50.0      50.0	# Punkt, auf den das Auge schaut
 up            0.0     1.0     0.0       # Up-Vektor gibt an, wo oben ist
 aspect          1.7777777777777777777777777777778
 fovy           55			# Field-of-view-Winkel
