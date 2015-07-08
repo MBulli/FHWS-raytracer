@@ -168,16 +168,10 @@ Color Ray::shaded_color(const LightConstPtr& light, Ray &reflectedray, Vector &n
 
 Ray Ray::reflect(Vector &origin, Vector &normal)
 {
-	Ray	 reflection;
-	double	 incdot;
+	const double incdot = normal.dot(this->direction);
+	const Vector dir = this->direction.vsub(normal.svmpy(2.0*incdot)).normalize();
 
-	incdot = normal.dot(this->direction);
-	reflection.origin = origin;
-	reflection.direction = normal.svmpy(2.0*incdot);
-	reflection.direction = this->direction.vsub(reflection.direction).normalize();
-
-	reflection.depth = depth + 1;
-	return reflection;
+	return Ray(dir, origin, this->depth + 1);
 } /* reflect() */
 
 Ray Ray::refraction(Vector& origin, Vector& normal, ObjektConstPtr object)
@@ -201,12 +195,7 @@ Ray Ray::refraction(Vector& origin, Vector& normal, ObjektConstPtr object)
 	const Vector y = normal.svmpy(n + sqrt(1.0 - sinT2));
 	const Vector t = x.vsub(y); // refraction direction
 
-	Ray refraction;
-	refraction.origin = origin;
-	refraction.direction = t.normalize();
-	refraction.currentRefractionIndex = n2;
-	refraction.depth = this->depth + 1;
-	return refraction;
+	return Ray(t.normalize(), origin, this->depth + 1, n2);
 }
 
 Color Ray::glossyReflectionShade(Ray& reflectedRay, const Vector& normal, const ObjektConstPtr& object, const double glossy, const int glossySamples, const std::vector<ObjektConstPtr>& objects, const std::vector<LightConstPtr>& lights, const Color& background, const Color& globalAmbient)
@@ -220,7 +209,7 @@ Color Ray::glossyReflectionShade(Ray& reflectedRay, const Vector& normal, const 
 	const Vector reflX = reflZ.cross(normal).normalize();
 	const Vector reflY = reflZ.cross(reflX).normalize();
 
-	Color accMirrColor;
+	AccumulatedColor accMirrColor;
 	for (int i = 0; i < glossySamples; i++)
 	{
 		const double angle = random() * 2 * M_PI;
@@ -234,11 +223,11 @@ Color Ray::glossyReflectionShade(Ray& reflectedRay, const Vector& normal, const 
 			continue;
 
 		reflectedRay.setDirection(r.normalize());
+		const Color clr = reflectedRay.shade(objects, lights, background, globalAmbient);
 
-		Color clr = reflectedRay.shade(objects, lights, background, globalAmbient);
-		accMirrColor = accMirrColor.addcolor(clr);
+		accMirrColor.addcolor(clr);
 	}
 
-	return accMirrColor.scmpy(1.0 / glossySamples);
+	return accMirrColor.getColor();
 }
 

@@ -15,7 +15,8 @@ class Ray
 
 public:
 	Ray(void) : direction(), origin(), depth (0), currentRefractionIndex(1.0) {};
-	Ray(const Vector &dir, const Vector &orig, int d) : direction(dir), origin(orig), depth (d), currentRefractionIndex(1.0) {};
+	Ray(const Vector &dir, const Vector &orig, int depth, double refractionIndex = 1.0)
+		: direction(dir), origin(orig), depth (depth), currentRefractionIndex(refractionIndex) {};
 
 	Color shade(const std::vector<ObjektConstPtr>& objects,
 				const std::vector<LightConstPtr>& lights,

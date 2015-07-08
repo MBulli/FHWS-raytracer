@@ -103,7 +103,7 @@ Color traceDOFRay(Ray& ray, const Config& c)
 
 	const Vector focalPoint = ray.intersectionPoint(c.focalDistance);
 
-	Color accColor;
+	AccumulatedColor accColor;
 	for (int i = 0; i < c.depthOfFieldSamples; i++)
 	{
 		const double a = random();
@@ -120,11 +120,10 @@ Color traceDOFRay(Ray& ray, const Config& c)
 		ray.setDirection(focalPoint.vsub(ray.getOrigin()).normalize());
 
 		const Color color = ray.shade(c.objects, c.lights, c.backgroundColor, c.globalAmbient);
-		accColor = accColor.addcolor(color);
+		accColor.addcolor(color);
 	}
 
-	accColor = accColor.scmpy(1.0 / c.depthOfFieldSamples);
-	return accColor;
+	return accColor.getColor();
 }
 
 void tracePartition(Config& c, Parser& parser, int num_threads, int startScanline) 
@@ -217,7 +216,7 @@ int main(int argc, _TCHAR* argv[])
 
 	auto totalRunDuration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - totalRunTime);
 
-	cout << "Tracing took " << totalRunDuration.count() / 1000 << "sec (" << totalRunDuration.count() << "ms) in total." << endl;
+	cout << "Tracing took " << totalRunDuration.count() / 1000.0f / 60.0f << "min (" << totalRunDuration.count() / 1000.0f << "sec) in total." << endl;
 	cout << "Done tracing. Writing file ..." << endl;
 
 	char *name = "raytrace-bild.ppm";

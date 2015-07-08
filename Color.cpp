@@ -30,3 +30,15 @@ Color Color::scmpy(double s) const
 } /* scmpy */
 
 
+void AccumulatedColor::addcolor(const Color& c)
+{
+	count++;
+	r += c.r;
+	g += c.g;
+	b += c.b;
+}
+
+Color AccumulatedColor::getColor() const
+{
+	return Color(r/count, g/count, b/count);
+}
