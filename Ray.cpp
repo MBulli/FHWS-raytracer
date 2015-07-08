@@ -37,7 +37,7 @@ Color Ray::shade(const vector<ObjektConstPtr> &objects, const vector<LightConstP
 		ObjektConstPtr child = nullptr;
 		t = obj->intersect(*this, &child);
 
-		if (0.0 < t && t < min_t) {
+		if (!isnan(t) && t < min_t) {
 			min_t = t;
 
 			if (child) {
@@ -107,7 +107,7 @@ Color Ray::shade(const vector<ObjektConstPtr> &objects, const vector<LightConstP
 				cur_color = cur_color.addcolor(mirrorColor.scmpy(mirror));
 			}
 			
-			// Reflaction
+			// Refraction
 			if (this->currentRefractionIndex != refracted_ray.currentRefractionIndex)
 			{
 				// if total internal reflection

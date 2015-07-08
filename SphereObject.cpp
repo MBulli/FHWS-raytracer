@@ -44,14 +44,13 @@ double SphereObject::intersect(const Ray& ray, ObjektConstPtr* outChild) const
 
 	double D = b*b - 4*a*c;
 
-	if (D < 0)
-	{
-		return -1;
+	if (D < 0) {
+		return NAN;
 	}
 
 	double t1 = (-b + sqrt(D)) / 2*a;
 	double t2 = (-b - sqrt(D)) / 2*a;
 
 	double t = std::min(t1, t2);
-	return t > 0.001 ? t : -1;
+	return t > 0.001 ? t : NAN;
 }

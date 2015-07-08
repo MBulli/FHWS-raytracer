@@ -7,7 +7,7 @@ background	0.0	0.0	0.0		    # Hintergrundfarbe schwarz
 # 
 # Projektion
 #
-eyepoint     0.0	0.0	 100.0	# Auge-Koordinaten
+eyepoint     0.0	0.0	  100.0	# Auge-Koordinaten
 lookat       0.0	0.0		0.0	# Punkt, auf den das Auge schaut
 fovx         90					# Field-of-view-Winkel
 aspect       1.333333333333				# Verhaeltnis Breite zu Hoehe
@@ -64,7 +64,7 @@ object geo4 sphere	-100.0   25.0   -300.0   50.0
 object geo5 quadric 1.0 0.0 0.0 0.0 1.0 0.0 -200.0 1.0 500.0 71875.0
 #object geo5 sphere	0.0   100.0   -250.0   25.0
 
-object mySphere sphere -50 0 0 50
+object mySphere sphere 0 55 -200 70
 object innerSphere sphere 0 0 0 25
 
 object cube poly
@@ -89,9 +89,9 @@ object cube poly
 # | /
 # 1/
 object tri poly
-	vertex  5  0 -10
-	vertex  5 50 -10
-	vertex 55 50 -10
+	vertex  5  0 -100
+	vertex  5 50 -100
+	vertex 55 50 -100
 	tex 1 0  1
 	tex 2 0  0
 	tex 3 1  0
@@ -104,15 +104,30 @@ object tri2 poly
 	polygon 3 2 1
 
 object plane poly
-	vertex 0 50  0
-	vertex 50 50 0
-	vertex 50 0 0
-	vertex 0 0  0
+	vertex -150 150  -200
+	vertex 150 150 -200
+	vertex 150 -150 -200
+	vertex -150 -150  -200
 	tex 1 0 0
 	tex 2 1 0 
 	tex 3 1 1
 	tex 4 0 1
 	polygon 4 3 2 1
+
+object pyramide poly
+	vertex -20 -20 0
+	vertex -20 -20 -100
+	vertex -20  80 -50
+	vertex  20 -20  0
+	vertex  20 -20 -100
+	vertex  20  80 -50
+	polygon 3 2 1
+	polygon 4 5 6
+	polygon 1 4 5 2
+	polygon 1 4 6 3
+	polygon 5 2 3 6
+	#polygon 6 3 2 5
+
 	
 #
 #  Oberflaechenbeschaffenheiten
@@ -134,7 +149,7 @@ property prop2
 ambient  0.0    0.2     0.0	 # leicht gruenlich Filter
 diffuse	 0.5	0.5		0.5	 # mittleres silbergrau
 specular 1.0	1
-mirror	 1.0
+mirror	 0.0
 texture null
 refraction 0 1
 glossy   0 0
@@ -158,7 +173,18 @@ diffuse  0.0	0.0		0.0	# gruen
 specular 0.0	1
 mirror	 0.0
 texture null
-refraction 1.0 1.1
+refraction 1.0 1.5
+glossy   0 0
+opacity	 0.0
+
+# Oberflaechenbeschaffenheit 1
+property prop5
+ambient  0.2    0.0     0.0	  # leicht roetlicher Filter
+diffuse	 0.7	0.7	0.7	      # helleres silbergrau
+specular 1.0	8			  # Besser wäre specular 1.0	4  
+mirror	 0.8
+texture chess.png
+refraction 0 1
 glossy   0 0
 opacity	 0.0
 
@@ -185,15 +211,21 @@ color	   0.0	 0.5	 1.0
 #  Objekte (Zuordnung:  Geometriebeschreibung <-> Oberflaechenbeschaffenheit
 #
 
+# prop1 = opacity
+# prop3 = grün
+# prop4 = refraction
+# prop5 = texture
+
 # Zuordnungstabelle
 #object	 geo1	 prop3
 #object	 geo2	 prop1
 #object	 geo3	 prop2
 #object	 geo4	 prop3
 #object	 geo5	 prop1
-#object  mySphere prop4
+#object  mySphere prop5
 #object  cube     prop4
 object  tri     prop3
-#object  plane prop3
+object  plane prop3
 #object innerSphere  prop3
-object tri2 prop1
+#object tri2 prop1
+object pyramide prop4

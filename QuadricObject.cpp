@@ -19,7 +19,7 @@ Vector QuadricObject::get_normal(Vector& v) const
 
 double QuadricObject::intersect(const Ray& ray, ObjektConstPtr* outChild) const
 {
-	double t = -1.0;
+	double t = NAN;
 	double acoef, bcoef, ccoef, root, disc;
 
 	Vector direction = ray.getDirection();
@@ -51,6 +51,6 @@ double QuadricObject::intersect(const Ray& ray, ObjektConstPtr* outChild) const
 			}
 		}
 	}
-	t = ((0.001 < t) ? t : -1.0);
+	t = ((0.001 < t) ? t : NAN);
 	return t;
 }

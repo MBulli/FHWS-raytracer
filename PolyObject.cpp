@@ -22,7 +22,7 @@ double PolyObject::intersect(const Ray& ray, ObjektConstPtr* outChild) const
 	{
 		double t = tri->intersect(ray, outChild);
 
-		if (t > 0.0 && t < min_t)
+		if (!isnan(t) && t < min_t)
 		{
 			*outChild = tri;
 			min_t = t;
@@ -30,7 +30,7 @@ double PolyObject::intersect(const Ray& ray, ObjektConstPtr* outChild) const
 	}
 
 	// no intersection
-	return min_t == DBL_MAX ? -1 : min_t;
+	return min_t == DBL_MAX ? NAN : min_t;
 }
 
 void PolyObject::setProperty(PropertyPtr property)
@@ -116,7 +116,7 @@ double Triangle::intersect(const Ray& ray, ObjektConstPtr* outChild) const
 
 	// The ray is nearly parallel to the plane
 	if (a <= epsilon) {
-		return -1.0;
+		return NAN;
 	}
 
 	const Vector& s = ray.getOrigin().vsub(p0);
@@ -125,7 +125,7 @@ double Triangle::intersect(const Ray& ray, ObjektConstPtr* outChild) const
 
 	// The ray origin is behind the plane
 	if (dist <= 0.0) {
-		return -1.0;
+		return NAN;
 	}
 
 	// Bayrycentric vertex weights
@@ -140,9 +140,9 @@ double Triangle::intersect(const Ray& ray, ObjektConstPtr* outChild) const
 		|| (weight1 < -epsilon2)
 		|| (weight2 < -epsilon2))
 	{
-		return -1.0;
+		return NAN;
 	}
 
-	return dist > 0.001 ? dist : -1;
+	return dist > 0.001 ? dist : NAN;
 }
 
