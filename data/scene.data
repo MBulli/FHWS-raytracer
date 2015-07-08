@@ -8,7 +8,7 @@ up            0.0     1.0     0.0       # Up-Vektor gibt an, wo oben ist
 aspect          1.7777777777777777777777777777778
 fovy           55			# Field-of-view-Winkel
 
-apertureRadius 0.3
+apertureRadius 0
 focalDistance 150
 dofSamples 5
 
@@ -106,7 +106,8 @@ specular 1.0	4
 mirror	 0.8
 texture null
 refraction 0 1
-glossy   0.25 100
+glossy   0.25 1
+opacity	 0.0
 
 # Oberflaechenbeschaffenheit 2
 property p2
@@ -117,6 +118,7 @@ mirror	 0.7
 texture null
 refraction 0 1
 glossy   0 0
+opacity	 0.0	
 
 # Oberflaechenbeschaffenheit 3
 property p3
@@ -127,6 +129,7 @@ mirror	 0.2
 texture null
 refraction 0 1
 glossy   0 0
+opacity	 0.0
 
 property p4
 ambient  0.0    0.0     0.0	# leicht blaeulich Filter
@@ -136,6 +139,7 @@ mirror	 0.0
 texture null
 refraction 1.0 1.3
 glossy   0 0
+opacity	 0.0
 
 #
 # Lichtquelle 1

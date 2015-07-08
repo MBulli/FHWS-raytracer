@@ -46,6 +46,7 @@ static int yyerror(char *s)
 struct {
 	double ar,ag,ab, r, g, b, specular, specShininess, mirror, refraction, refractionIndex;
 	double glossy; int glossySamples;
+	double opacity;
 	char* texture;
 	} prop;
 
@@ -56,7 +57,7 @@ struct {
 int yylex();
 extern void add_quadric(char *n, double a, double b, double c, double d, double e, double f, double g, double h, double j, double k);
 extern void add_sphere(char *n, double xm, double ym, double zm, double r);
-extern void add_property(char *n, double ar, double ag, double ab, double r, double g, double b, double s, double shininess, double m, char* textureFilename, double refraction, double refractionIndex, double glossy, int glossySamples);
+extern void add_property(char *n, double ar, double ag, double ab, double r, double g, double b, double s, double shininess, double m, char* textureFilename, double refraction, double refractionIndex, double glossy, int glossySamples, double opacity);
 extern void add_objekt(char *ns, char *np);
 extern void add_light(char *n, double dirx, double diry, double dirz, double colr, double colg, double colb);
 
@@ -93,7 +94,7 @@ extern void set_dofSamples(int s);
 %token RESOLUTION EYEPOINT LOOKAT UP FOVX FOVY ASPECT
 %token OBJECT QUADRIC POLY SPHERE
 %token VERTEX TEX
-%token PROPERTY AMBIENT DIFFUSE SPECULAR MIRROR TEXTURE REFRACTION GLOSSY
+%token PROPERTY AMBIENT DIFFUSE SPECULAR MIRROR TEXTURE REFRACTION GLOSSY OPACITY
 %token AMBIENCE BACKGROUND
 %token LIGHT DIRECTION COLOR
 %token FOCAL_DISTANCE DOF_SAMPLES APERTURE_RADIUS
@@ -365,9 +366,9 @@ properties
     ;
 
 one_property
-    : PROPERTY STRING ambient diffuse specular mirror texture refraction glossy
+    : PROPERTY STRING ambient diffuse specular mirror texture refraction glossy opacity
 	{
-		add_property($2, prop.ar, prop.ag, prop.ab, prop.r, prop.g, prop.b, prop.specular, prop.specShininess, prop.mirror, prop.texture, prop.refraction, prop.refractionIndex, prop.glossy, prop.glossySamples); 
+		add_property($2, prop.ar, prop.ag, prop.ab, prop.r, prop.g, prop.b, prop.specular, prop.specShininess, prop.mirror, prop.texture, prop.refraction, prop.refractionIndex, prop.glossy, prop.glossySamples, prop.opacity); 
 		free($2);
 		free(prop.texture);
 	}
@@ -428,6 +429,12 @@ glossy
 		prop.glossySamples = $3;
 	  }
 	;
+
+opacity
+	: OPACITY realVal
+	  {
+		prop.opacity = $2;
+	  }
 
 object_section
     : objects

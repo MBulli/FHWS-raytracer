@@ -120,6 +120,8 @@ specular 1.0	100			  # Besser wäre specular 1.0	4
 mirror	 0.8
 texture null
 refraction 0 1
+glossy   0 0
+opacity	 0.0
 
 # Oberflaechenbeschaffenheit 2
 property prop2
@@ -129,6 +131,8 @@ specular 1.0	1
 mirror	 1.0
 texture null
 refraction 0 1
+glossy   0 0
+opacity	 0.0
 
 # Oberflaechenbeschaffenheit 3
 property prop3
@@ -138,6 +142,8 @@ specular 1.0	1
 mirror	 0.2
 texture null
 refraction 0 1
+glossy   0 0
+opacity	 0.0
 
 # Oberflaechenbeschaffenheit 4
 property prop4
@@ -147,6 +153,8 @@ specular 0.0	1
 mirror	 0.0
 texture null
 refraction 1.0 1.1
+glossy   0 0
+opacity	 0.0
 
 #
 #  Licht-Informationen

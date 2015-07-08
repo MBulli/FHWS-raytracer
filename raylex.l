@@ -40,6 +40,7 @@ diffuse { return(DIFFUSE); }
 specular { return(SPECULAR); }
 mirror { return(MIRROR); }
 glossy { return(GLOSSY); }
+opacity { return(OPACITY); }
 texture { return(TEXTURE); }
 refraction { return(REFRACTION); }
 ambience { return(AMBIENCE); }
