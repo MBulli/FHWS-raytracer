@@ -90,8 +90,10 @@ Color Ray::shade(const vector<ObjektConstPtr> &objects, const vector<LightConstP
 			{
 				Color mirrorColor;
 				const double glossy = closest->getProperty().getGlossy();
-				if (glossy != 0.0)	{
-					mirrorColor = glossyReflectionShade(reflected_ray, normal, closest, objects, lights, background, globalAmbient);
+				if (glossy != 0.0) {
+					// reduce the number of samples linear to the reflection recursive depth
+					const int glossySamples = int(closest->getProperty().getGlossySamples() / float(depth+1));
+					mirrorColor = glossyReflectionShade(reflected_ray, normal, closest, glossy, glossySamples, objects, lights, background, globalAmbient);
 				}
 				else {
 					mirrorColor = reflected_ray.shade(objects, lights, background, globalAmbient);
@@ -207,11 +209,8 @@ Ray Ray::refraction(Vector& origin, Vector& normal, ObjektConstPtr object)
 	return refraction;
 }
 
-Color Ray::glossyReflectionShade(Ray& reflectedRay, const Vector& normal, const ObjektConstPtr& object, const std::vector<ObjektConstPtr>& objects, const std::vector<LightConstPtr>& lights, const Color& background, const Color& globalAmbient)
+Color Ray::glossyReflectionShade(Ray& reflectedRay, const Vector& normal, const ObjektConstPtr& object, const double glossy, const int glossySamples, const std::vector<ObjektConstPtr>& objects, const std::vector<LightConstPtr>& lights, const Color& background, const Color& globalAmbient)
 {
-	const int glossySamples = object->getProperty().getGlossySamples();
-	const double glossy = object->getProperty().getGlossy();
-
 	static std::default_random_engine generator;
 	static uniform_real_distribution<double> distribution(0, 1);
 	static auto random = std::bind(distribution, generator);

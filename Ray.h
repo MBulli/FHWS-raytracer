@@ -36,6 +36,8 @@ public:
 	Color glossyReflectionShade(Ray& reflectedRay, 
 								const Vector& normal,
 								const ObjektConstPtr& object,
+								const double glossy,
+								const int glossySamples,
 								const std::vector<ObjektConstPtr>& objects,
 								const std::vector<LightConstPtr>& lights,
 								const Color& background,
