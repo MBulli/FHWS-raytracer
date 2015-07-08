@@ -33,6 +33,7 @@ public:
 
 	Ray reflect(Vector &origin, Vector &normal);
 	Ray refraction(Vector& origin, Vector& normal, ObjektConstPtr object);
+	Ray transculent(Vector& origin);
 
 	Color glossyReflectionShade(Ray& reflectedRay, 
 								const Vector& normal,

@@ -29,7 +29,7 @@ Color Ray::shade(const vector<ObjektConstPtr> &objects, const vector<LightConstP
 	double min_t = DBL_MAX, t;
 
 	Vector intersection_position, normal;
-	Ray lv, reflected_ray, refracted_ray;
+	Ray lv, reflected_ray, refracted_ray, translucent_ray;
 	bool something_intersected = false;
 
 	for (const ObjektConstPtr& obj : objects)
@@ -56,10 +56,11 @@ Color Ray::shade(const vector<ObjektConstPtr> &objects, const vector<LightConstP
 	} else {
 		intersection_position = intersectionPoint(min_t);
 		normal = closest->get_normal(intersection_position);
-		cur_color = closest->get_color(*this, intersection_position, globalAmbient);
+		cur_color = closest->get_color(*this, intersection_position, globalAmbient); // Ambient color
 
 		reflected_ray = reflect(intersection_position, normal);
 		refracted_ray = refraction(intersection_position, normal, closest);
+		translucent_ray = transculent(intersection_position);
 
 		for (const LightConstPtr& li : lights) {
 			lv.setDirection(li->getDirection());
@@ -71,19 +72,23 @@ Color Ray::shade(const vector<ObjektConstPtr> &objects, const vector<LightConstP
 				ObjektConstPtr child = nullptr;
 				t = obj->intersect(lv, &child);
 				if (t > 0.0) {
+					// Shadow
 					something_intersected = true;
 					break;
 				}
 			}
 
+			// Light color
 			if (something_intersected == false) {
 				Color new_color = shaded_color(li, reflected_ray, normal, closest);
 				cur_color = cur_color.addcolor(new_color);
 			} 
 		}
 
-		if (depth < 5) {
-
+		// only calculate reflaction/refraction if the recursive limit is not hit
+		// otherwise we would possibly spawn infinite rays
+		if (depth < 5) 
+		{
 			// Reflection
 			const double mirror = closest->getProperty().getMirror();
 			if (mirror != 0.0)
@@ -113,7 +118,16 @@ Color Ray::shade(const vector<ObjektConstPtr> &objects, const vector<LightConstP
 					cur_color = cur_color.addcolor(refrac_color);
 				}
 			}
+		}
 
+		// Opacity
+		const double opacity = closest->getProperty().getOpacity();
+		if (opacity != 0.0)
+		{
+			const double alpha = 1.0 - opacity;
+
+			const Color trans_color = translucent_ray.shade(objects, lights, background, globalAmbient);
+			cur_color = cur_color.scmpy(alpha).addcolor(trans_color.scmpy(1.0 - alpha));
 		}
 	}
 	return(cur_color);
@@ -196,6 +210,11 @@ Ray Ray::refraction(Vector& origin, Vector& normal, ObjektConstPtr object)
 	const Vector t = x.vsub(y); // refraction direction
 
 	return Ray(t.normalize(), origin, this->depth + 1, n2);
+}
+
+Ray Ray::transculent(Vector& origin)
+{
+	return Ray(this->direction, origin, this->depth + 1, this->currentRefractionIndex);
 }
 
 Color Ray::glossyReflectionShade(Ray& reflectedRay, const Vector& normal, const ObjektConstPtr& object, const double glossy, const int glossySamples, const std::vector<ObjektConstPtr>& objects, const std::vector<LightConstPtr>& lights, const Color& background, const Color& globalAmbient)
