@@ -13,7 +13,8 @@ std::vector<ObjektPtr> rawObjects; // objects without property
 std::vector<ObjektPtr> objekte;
 std::vector<LightPtr> lights;
 
-PolyObjectPtr currentPolyObject = nullptr;
+string currentPolyName;
+vector<TrianglePtr> currentPolyTriangles;
 vector<Vector> currentPolyVertices;
 map<int, Vector> currentTexMappings;
 
@@ -219,8 +220,10 @@ extern "C" {
 
 	// Poly objects
 	void begin_poly_object(char* n)	{
-		currentPolyObject = make_shared<PolyObject>(n);
+		currentPolyName.assign(n);
 		currentPolyVertices.clear();
+		currentPolyTriangles.clear();
+		currentTexMappings.clear();
 	}
 
 	void add_poly_vertex(double x, double y, double z) {
@@ -236,7 +239,7 @@ extern "C" {
 		Vector& t1 = currentTexMappings[i1];
 		Vector& t2 = currentTexMappings[i2];
 
-		currentPolyObject->addTriangle(v0, v1, v2, t0, t1, t2);
+		currentPolyTriangles.push_back(make_shared<Triangle>(v0, v1, v2, t0, t1, t2));
 	}
 
 	void add_poly_rectangle(int i0, int i1, int i2, int i3)	{
@@ -250,8 +253,8 @@ extern "C" {
 		Vector& t2 = currentTexMappings[i2];
 		Vector& t3 = currentTexMappings[i3];
 
-		currentPolyObject->addTriangle(v0, v1, v2, t0, t1, t2);
-		currentPolyObject->addTriangle(v2, v3, v0, t2, t3, t0);
+		currentPolyTriangles.push_back(make_shared<Triangle>(v0, v1, v2, t0, t1, t2));
+		currentPolyTriangles.push_back(make_shared<Triangle>(v2, v3, v0, t2, t3, t0));
 	}
 
 	void add_poly_texmap(int index, double u, double v)	{
@@ -259,8 +262,11 @@ extern "C" {
 	}
 
 	void end_poly_object() {
-		rawObjects.push_back(currentPolyObject);
-		currentPolyObject = nullptr;
+		PolyObjectPtr obj = make_shared<PolyObject>(currentPolyName, currentPolyTriangles);
+		rawObjects.push_back(obj);
+
+		currentPolyName.clear();
+		currentPolyTriangles.clear();
 		currentPolyVertices.clear();
 		currentTexMappings.clear();
 	}

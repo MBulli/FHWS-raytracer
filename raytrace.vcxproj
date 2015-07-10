@@ -102,6 +102,7 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <None Include="data\camp.data" />
     <None Include="data\dflt.data" />
     <None Include="data\dof.data" />
     <None Include="data\markus.data" />

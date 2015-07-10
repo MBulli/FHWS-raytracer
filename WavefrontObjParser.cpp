@@ -104,6 +104,7 @@ std::vector<PolyObjectPtr> WavefrontObjParser::generateGeneratePolyObejekts()
 			}
 		}
 		objects.push_back(std::make_shared<PolyObject>(iterator->first, triangles /*, propInit */)); // TODO propInit
+		triangles.clear();
 	}
 	return objects;
 }

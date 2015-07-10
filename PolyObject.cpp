@@ -6,6 +6,41 @@
 #include <map>
 #include <cmath>
 
+void PolyObject::calcBoundingSphere()
+{
+	Vector min(DBL_MAX, DBL_MAX, DBL_MAX), max(-DBL_MAX, -DBL_MAX, -DBL_MAX);
+
+	for (auto& triangle : triangles)
+	{
+		for (const auto& v : triangle->getPoints())
+		{
+			if (v->x < min.x) min.x = v->x;
+			if (v->x > max.x) max.x = v->x;
+			if (v->y < min.y) min.y = v->y;
+			if (v->y > max.y) max.y = v->y;
+			if (v->z < min.z) min.z = v->z;
+			if (v->z > max.z) max.z = v->z;
+		}
+	}
+
+	boundingSphereCenter = min.vadd(max).svmpy(0.5);
+
+	for (const auto& triangle : triangles)
+	{
+		for (const auto& v : triangle->getPoints())
+		{
+			float d = v->vsub(boundingSphereCenter).veclength();
+			if (d > boundingSphereRadius) 
+				boundingSphereRadius = d;
+		}
+	}
+}
+
+bool PolyObject::intersectsWithBoundingSphere(const Ray& ray) const
+{
+	return boundingSphereCenter.vsub(ray.getOrigin()).cross(ray.getDirection()).veclength() <= boundingSphereRadius;
+}
+
 PolyObject::~PolyObject()
 {
 }
@@ -17,6 +52,10 @@ Vector PolyObject::get_normal(Vector& v) const
 
 double PolyObject::intersect(const Ray& ray, ObjektConstPtr* outChild) const
 {
+	if (!intersectsWithBoundingSphere(ray)) {
+		return NAN;
+	}
+
 	double min_t = DBL_MAX;
 	for (const TrianglePtr& tri : triangles)
 	{

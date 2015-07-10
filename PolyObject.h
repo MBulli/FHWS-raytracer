@@ -2,7 +2,7 @@
 
 #include "Objekt.h"
 #include <vector>
-#include <map>
+#include <array>
 
 class Triangle : public Objekt
 {
@@ -25,6 +25,8 @@ public:
 	double intersect(const Ray& ray, ObjektConstPtr* child) const override;
 
 	Vector barycentric(const Vector& point) const;
+
+	std::array<const Vector*, 3> getPoints() const { return std::array<const Vector*, 3>{{ &p0, &p1, &p2 }}; }
 };
 
 typedef std::shared_ptr<Triangle> TrianglePtr;
@@ -33,18 +35,25 @@ class PolyObject : public Objekt
 {
 private:
 	std::vector<TrianglePtr> triangles;
+
+	Vector boundingSphereCenter;
+	double boundingSphereRadius;
+
+	void calcBoundingSphere();
+	bool intersectsWithBoundingSphere(const Ray& ray) const;
 public:
 	PolyObject(char *n) : Objekt(n) {};
 	PolyObject(const std::string& name, std::vector<TrianglePtr>& triangles)
-		: Objekt(name), triangles(triangles) {}
+		: Objekt(name), triangles(triangles)
+	{
+		calcBoundingSphere();
+	}
 	~PolyObject();
 
 	Vector get_normal(Vector& v) const override;
 	double intersect(const Ray& ray, ObjektConstPtr* outChild) const override;
 
 	void setProperty(PropertyPtr property) override;
-	void addTriangle(Vector p0, Vector p1, Vector p2, Vector t0, Vector t1, Vector t2) { triangles.emplace_back(std::make_shared<Triangle>(p0, p1, p2, t0, t1, t2)); }
-	void addTriangle(TrianglePtr tri) { triangles.push_back(tri); }
 };
 
 typedef std::shared_ptr<PolyObject> PolyObjectPtr;

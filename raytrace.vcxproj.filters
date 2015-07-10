@@ -37,6 +37,9 @@
     <None Include="data\markus.data">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="data\camp.data">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
