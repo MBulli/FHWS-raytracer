@@ -530,9 +530,9 @@ direction : DIRECTION realVal realVal realVal
 	
 position : POSITION realVal realVal realVal
 	{
-		light.dirx = $2;
-		light.diry = $3;
-		light.dirz = $4;	
+		light.posx = $2;
+		light.posy = $3;
+		light.posz = $4;	
 	}
 	;
 
