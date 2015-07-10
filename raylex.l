@@ -48,6 +48,8 @@ ambience { return(AMBIENCE); }
 background { return(BACKGROUND); }
 dir_light { return(DIRLIGHT); }
 point_light { return(PTRLIGHT); }
+circlearea_light { return(CIRCLEAREALIGHT); }
+radius { return(RADIUS); }
 direction { return(DIRECTION); }
 position { return(POSITION); }
 color { return(COLOR); } /* equivalent spelling */

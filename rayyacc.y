@@ -51,7 +51,10 @@ struct {
 	} prop;
 
 struct {
-	double dirx, diry, dirz, colr, colg, colb;
+	double dirx, diry, dirz;
+	double posx, posy, posz;
+	double colr, colg, colb;
+	double radius;
 	} light;
 
 int yylex();
@@ -72,6 +75,7 @@ extern void add_wavefront(char *filename);
 
 extern void add_dirlight(char* n, double dirx, double diry, double dirz, double colr, double colg, double colb);
 extern void add_ptrlight(char* n, double posx, double posy, double posz, double colr, double colg, double colb);
+extern void add_circle_area_light(char* n, double posx, double posy, double posz, double dirx, double diry, double dirz, double radius, double colr, double colg, double colb);
 
 extern void begin_poly_object(char *n);
 extern void add_poly_vertex(double x, double y, double z);
@@ -108,7 +112,7 @@ extern void set_dofSamples(int s);
 %token VERTEX TEX
 %token PROPERTY AMBIENT DIFFUSE SPECULAR MIRROR TEXTURE REFRACTION GLOSSY OPACITY
 %token AMBIENCE BACKGROUND
-%token DIRLIGHT PTRLIGHT POSITION DIRECTION COLOR
+%token DIRLIGHT PTRLIGHT CIRCLEAREALIGHT POSITION DIRECTION RADIUS COLOR
 %token FOCAL_DISTANCE DOF_SAMPLES APERTURE_RADIUS
 
 %%
@@ -488,6 +492,7 @@ lights
 one_light
 	: dir_light
 	| ptr_light
+	| circle_area_light
 	;
 
 dir_light : DIRLIGHT STRING direction color
@@ -499,7 +504,18 @@ dir_light : DIRLIGHT STRING direction color
 
 ptr_light : PTRLIGHT STRING position color
 	{
-		add_ptrlight($2, light.dirx, light.diry, light.dirz, light.colr, light.colg, light.colb);
+		add_ptrlight($2, light.posx, light.posy, light.posz, light.colr, light.colg, light.colb);
+		free($2);
+	}
+	;
+
+circle_area_light :	CIRCLEAREALIGHT STRING position direction circle_area_light_radius color
+	{
+		add_circle_area_light($2, 
+							 light.posx, light.posy, light.posz,
+							 light.dirx, light.diry, light.dirz,
+							 light.radius,
+							 light.colr, light.colg, light.colb);
 		free($2);
 	}
 	;
@@ -520,6 +536,11 @@ position : POSITION realVal realVal realVal
 	}
 	;
 
+circle_area_light_radius : RADIUS realVal
+	{
+		light.radius = $2;
+	}
+	;
 color : COLOR colorVal colorVal colorVal
     {
 		light.colr = $2;
