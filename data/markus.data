@@ -46,26 +46,26 @@ opacity	 0.0
 
 #
 # Lichtquelle 1
-dir_light l1
-direction  0.0	 0.0	 -1.0
-color	   1.0	 0.5	 0.1
+#dir_light l1
+#direction  0.0	 0.0	 -1.0
+#color	   1.0	 0.5	 0.1
 
 #
 # Lichtquelle 2
-dir_light l2
-direction  0.1	 0.2	 1.0
-color	   0.2	 0.2	 0.2
+#dir_light l2
+#direction  0.1	 0.2	 1.0
+#color	   0.2	 0.2	 0.2
 
 #
 # Lichtquelle 3
-dir_light l3
-direction  1.0	 2.0	 3.0
-color	   0.0	 0.5	 1.0
+#dir_light l3
+#direction  1.0	 2.0	 3.0
+#color	   0.0	 0.5	 1.0
 
 #
 # Lichtquelle 4
 point_light l4
-position  0.0  0.0  0.0
+position  0.0  100.0  100.0
 color     1.0  0.0  0.0
 
 #

@@ -52,7 +52,7 @@ Color Ray::shade(const vector<ObjektConstPtr> &objects, const vector<LightConstP
 		if (depth == 0)
 			cur_color = background; //background_color;
 		else
-			cur_color = black;
+			cur_color = Color(0,0,0);
 	} else {
 		intersection_position = intersectionPoint(min_t);
 		normal = closest->get_normal(intersection_position);
@@ -63,15 +63,17 @@ Color Ray::shade(const vector<ObjektConstPtr> &objects, const vector<LightConstP
 		translucent_ray = transculent(intersection_position);
 
 		for (const LightConstPtr& li : lights) {
-			lv.setDirection(li->getDirection(Vector()));
+			lv.setDirection(li->getDirection(intersection_position));
 			lv.setOrigin(intersection_position);
-			something_intersected = false;
 
+			double lightDist = li->getDistance(intersection_position);
+
+			something_intersected = false;
 			for (const ObjektConstPtr& obj : objects)
 			{
 				ObjektConstPtr child = nullptr;
 				t = obj->intersect(lv, &child);
-				if (t > 0.0) {
+				if (t > 0.0 && t < lightDist) {
 					// Shadow
 					something_intersected = true;
 					break;
@@ -144,27 +146,24 @@ Color Ray::shade(const vector<ObjektConstPtr> &objects, const vector<LightConstP
 /* Rueckgabeparameter: errechnete Farbe                                       */
 /*----------------------------------------------------------------------------*/
 
-Color Ray::shaded_color(const LightConstPtr& light, Ray &reflectedray, Vector &normal, ObjektConstPtr obj)
+Color Ray::shaded_color(const LightConstPtr& light, const Ray& reflectedray, const Vector& normal, ObjektConstPtr& obj)
 {
-	Color reflected_color;
-	Color specular;
-	Color lambert;
-	double spec;
+	Color reflected_color = Color();
 
-	double ldot;
-	ldot = light->getDirection(Vector()).dot(normal);
-	reflected_color = black;
+	Vector lightDir = light->getDirection(reflectedray.getOrigin()).normalize();
+	// Diffuse light
+	double ldot = lightDir.dot(normal);
 	if (1.0 + ldot > 1.0) {
-		lambert = light->getColor().scmpy(ldot);
+		Color lambert = light->getColor().scmpy(ldot);
 		reflected_color = lambert.outprodc(obj->getProperty().getReflectance());
 	}
-	spec = reflectedray.getDirection().dot(light->getDirection(Vector()));
 
+	// Specular light
+	double spec = reflectedray.getDirection().dot(lightDir);
 	if (1.0 + spec > 1.0) {
-
 		spec = pow(spec, obj->getProperty().getShininess());
 		spec *= obj->getProperty().getSpecular();
-		specular =  light->getColor().scmpy(spec);
+		Color specular =  light->getColor().scmpy(spec);
 		reflected_color = reflected_color.addcolor(specular);
 	}
 	
