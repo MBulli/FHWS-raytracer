@@ -19,8 +19,9 @@ protected:
 	std::string name;
 public:
 
-	Objekt(char* name) : property(nullptr), name(name) {};
-	Objekt(void)       : property(nullptr), name("")   {};
+	Objekt(const char* name)		 : property(nullptr), name(name) {};
+	Objekt(const std::string& name)  : property(nullptr), name(name) {};
+	Objekt(void)			         : property(nullptr), name("")   {};
 
 	virtual ~Objekt() {};
 

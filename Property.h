@@ -16,7 +16,7 @@ class Property
 public:
 	Property(void) 
 		: reflectance(), specular(0.0), shininess(0.0), mirror(0.0), refraction(0.0), refractionIndex(1.0), glossy(0.0), glossySamples(0), opacitiy(0.0) {};
-	Property(char *n, Color &a, Color &r, double s, double shininess, double m, double refraction, double refractionIndex, double glossy, int glossySamples, double opacitiy)
+	Property(const char *n, Color &a, Color &r, double s, double shininess, double m, double refraction, double refractionIndex, double glossy, int glossySamples, double opacitiy)
 		: reflectance(r), ambient(a), specular(s), shininess(shininess), mirror(m), refraction(refraction), refractionIndex(refractionIndex), glossy(glossy), glossySamples(glossySamples), opacitiy(opacitiy), name(n) {};
 
 	void setTexture(TexturePtr tex) { texture = tex; }

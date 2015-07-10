@@ -63,7 +63,7 @@ Color Ray::shade(const vector<ObjektConstPtr> &objects, const vector<LightConstP
 		translucent_ray = transculent(intersection_position);
 
 		for (const LightConstPtr& li : lights) {
-			lv.setDirection(li->getDirection());
+			lv.setDirection(li->getDirection(Vector()));
 			lv.setOrigin(intersection_position);
 			something_intersected = false;
 
@@ -152,13 +152,13 @@ Color Ray::shaded_color(const LightConstPtr& light, Ray &reflectedray, Vector &n
 	double spec;
 
 	double ldot;
-	ldot = light->getDirection().dot(normal);
+	ldot = light->getDirection(Vector()).dot(normal);
 	reflected_color = black;
 	if (1.0 + ldot > 1.0) {
 		lambert = light->getColor().scmpy(ldot);
 		reflected_color = lambert.outprodc(obj->getProperty().getReflectance());
 	}
-	spec = reflectedray.getDirection().dot(light->getDirection());
+	spec = reflectedray.getDirection().dot(light->getDirection(Vector()));
 
 	if (1.0 + spec > 1.0) {
 

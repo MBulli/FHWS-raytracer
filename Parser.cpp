@@ -4,6 +4,7 @@
 #include "SphereObject.h"
 #include <iostream>
 #include "PolyObject.h"
+#include "WavefrontObjParser.h"
 
 using namespace std;
 
@@ -115,13 +116,22 @@ extern "C" {
 		DOFSamples = s;
 	}
 
-	// light
-	void add_light(char *n, double dirx, double diry, double dirz, double colr, double colg, double colb) {
-		fprintf(stderr, "  adding light %f %f %f %f %f %f\n", dirx, diry, dirz, colr, colg, colb);
+	// lights
+	void add_dirlight(char *n, double dirx, double diry, double dirz, double colr, double colg, double colb) {
+		fprintf(stderr, "  adding directional light %f %f %f %f %f %f\n", dirx, diry, dirz, colr, colg, colb);
 
-		LightPtr light = make_shared<Light>(Vector(dirx, diry, dirz).normalize(), Color(colr, colg, colb));
+		LightPtr light = make_shared<DirectionalLight>(Color(colr, colg, colb), Vector(dirx, diry, dirz).normalize());
 		lights.push_back(light);
 	};
+
+	
+	void add_ptrlight(char* n, double posx, double posy, double posz, double colr, double colg, double colb) {
+		fprintf(stderr, "  adding point light %f %f %f %f %f %f\n", posx, posy, posz, colr, colg, colb);
+
+		LightPtr light = make_shared<PointLight>(Color(colr, colg, colb), Vector(posx, posy, posz));
+		lights.push_back(light);
+	};
+
 
 	// geometry
 	void add_quadric(char *n, double a, double b, double c, double d, double e, double f, double g, double h, double j, double k) {
@@ -136,6 +146,24 @@ extern "C" {
 		SphereObjectPtr sphere = make_shared<SphereObject>(n, Vector(xm, ym, zm), r);
 		rawObjects.push_back(sphere);
 	};
+	void add_wavefront(char* filename)
+	{
+		fprintf(stderr, "  wavefront object from file %s\n", filename);
+
+		WavefrontObjParser parser = WavefrontObjParser(std::string(filename));
+		
+		parser.parseFile();
+
+		for (const PolyObjectPtr& obj : parser.generateGeneratePolyObejekts())
+		{
+			if (obj->getName().length() == 0)
+			{
+				fprintf(stderr, "ERROR: Unnamed object in wavefront file %s", filename);
+			}
+			rawObjects.push_back(obj);
+		}
+	}
+
 	void add_property(char *n, double ar, double ag, double ab, double r, double g, double b, double s, double shininess, double m, char* textureFilename, double refraction, double refractionIndex, double glossy, int glossySamples, double opacity) {
 		fprintf(stderr, "  adding prop %f %f %f %f %f %s %f %f %f %d %f\n", r, g, b, s, m, textureFilename, refraction, refractionIndex, glossy, glossySamples, opacity);
 

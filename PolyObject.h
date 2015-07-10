@@ -35,6 +35,8 @@ private:
 	std::vector<TrianglePtr> triangles;
 public:
 	PolyObject(char *n) : Objekt(n) {};
+	PolyObject(const std::string& name, std::vector<TrianglePtr>& triangles)
+		: Objekt(name), triangles(triangles) {}
 	~PolyObject();
 
 	Vector get_normal(Vector& v) const override;

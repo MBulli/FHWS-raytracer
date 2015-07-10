@@ -104,6 +104,7 @@
   <ItemGroup>
     <None Include="data\dflt.data" />
     <None Include="data\dof.data" />
+    <None Include="data\markus.data" />
     <None Include="data\scene.data" />
     <None Include="data\test.data" />
     <None Include="raylex.l" />
@@ -126,6 +127,7 @@
     <ClInclude Include="targetver.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="Vector.h" />
+    <ClInclude Include="WavefrontObjParser.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Color.cpp" />
@@ -150,6 +152,7 @@
     </ClCompile>
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Vector.cpp" />
+    <ClCompile Include="WavefrontObjParser.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

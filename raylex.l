@@ -34,6 +34,7 @@ tex { return(TEX); }
 vertex { return(VERTEX); }
 quadric { return(QUADRIC); }
 sphere { return(SPHERE); }
+wavefront { return(WAVEFRONT); }
 property { return(PROPERTY); }
 ambient { return(AMBIENT); }
 diffuse { return(DIFFUSE); }
@@ -45,8 +46,10 @@ texture { return(TEXTURE); }
 refraction { return(REFRACTION); }
 ambience { return(AMBIENCE); }
 background { return(BACKGROUND); }
-light { return(LIGHT); }
+dir_light { return(DIRLIGHT); }
+point_light { return(PTRLIGHT); }
 direction { return(DIRECTION); }
+position { return(POSITION); }
 color { return(COLOR); } /* equivalent spelling */
 up { return(UP); } /* equivalent spelling */
 {ganzz}	        {  yylval.intval=atoi(yytext); return(INTEGER); }

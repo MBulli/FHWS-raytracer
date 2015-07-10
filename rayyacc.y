@@ -55,11 +55,23 @@ struct {
 	} light;
 
 int yylex();
-extern void add_quadric(char *n, double a, double b, double c, double d, double e, double f, double g, double h, double j, double k);
-extern void add_sphere(char *n, double xm, double ym, double zm, double r);
-extern void add_property(char *n, double ar, double ag, double ab, double r, double g, double b, double s, double shininess, double m, char* textureFilename, double refraction, double refractionIndex, double glossy, int glossySamples, double opacity);
-extern void add_objekt(char *ns, char *np);
-extern void add_light(char *n, double dirx, double diry, double dirz, double colr, double colg, double colb);
+extern void add_property(char* n,
+						 double ar, double ag, double ab, 
+						 double r, double g, double b,
+						 double s, double shininess,
+						 double m,
+						 char* textureFilename,
+						 double refraction, double refractionIndex,
+						 double glossy, int glossySamples,
+						 double opacity);
+
+extern void add_quadric(char* n, double a, double b, double c, double d, double e, double f, double g, double h, double j, double k);
+extern void add_sphere(char* n, double xm, double ym, double zm, double r);
+extern void add_objekt(char* ns, char *np);
+extern void add_wavefront(char *filename);
+
+extern void add_dirlight(char* n, double dirx, double diry, double dirz, double colr, double colg, double colb);
+extern void add_ptrlight(char* n, double posx, double posy, double posz, double colr, double colg, double colb);
 
 extern void begin_poly_object(char *n);
 extern void add_poly_vertex(double x, double y, double z);
@@ -92,11 +104,11 @@ extern void set_dofSamples(int s);
 %token <floatval> FLOAT
 %token <stringval> STRING
 %token RESOLUTION EYEPOINT LOOKAT UP FOVX FOVY ASPECT
-%token OBJECT QUADRIC POLY SPHERE
+%token OBJECT QUADRIC POLY SPHERE WAVEFRONT
 %token VERTEX TEX
 %token PROPERTY AMBIENT DIFFUSE SPECULAR MIRROR TEXTURE REFRACTION GLOSSY OPACITY
 %token AMBIENCE BACKGROUND
-%token LIGHT DIRECTION COLOR
+%token DIRLIGHT PTRLIGHT POSITION DIRECTION COLOR
 %token FOCAL_DISTANCE DOF_SAMPLES APERTURE_RADIUS
 
 %%
@@ -258,6 +270,7 @@ one_surface
     : quadric_surface
 	| sphere_surface
     | polygon_surface
+	| wavefront_surface
     ;
 
 quadric_surface
@@ -276,6 +289,15 @@ sphere_surface
 		free($2);
 	}
 	;
+
+wavefront_surface
+	: OBJECT STRING WAVEFRONT STRING
+	{
+		add_wavefront($4);
+
+		free($2);
+		free($4);
+	}
 
 polygon_surface
     : OBJECT STRING POLY 
@@ -463,12 +485,24 @@ lights
     | one_light
     ;
 
-one_light : LIGHT STRING direction color
+one_light
+	: dir_light
+	| ptr_light
+	;
+
+dir_light : DIRLIGHT STRING direction color
     {
-		add_light($2, light.dirx, light.diry, light.dirz, light.colr, light.colg, light.colb);
-		free($2);  
+		add_dirlight($2, light.dirx, light.diry, light.dirz, light.colr, light.colg, light.colb);
+		free($2);
     }
     ;
+
+ptr_light : PTRLIGHT STRING position color
+	{
+		add_ptrlight($2, light.dirx, light.diry, light.dirz, light.colr, light.colg, light.colb);
+		free($2);
+	}
+	;
 
 direction : DIRECTION realVal realVal realVal
     {
@@ -477,6 +511,14 @@ direction : DIRECTION realVal realVal realVal
 		light.dirz = $4;
     }
     ;
+	
+position : POSITION realVal realVal realVal
+	{
+		light.dirx = $2;
+		light.diry = $3;
+		light.dirz = $4;	
+	}
+	;
 
 color : COLOR colorVal colorVal colorVal
     {
