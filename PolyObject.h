@@ -19,11 +19,12 @@ public:
 
 	const Vector& vertex(int i);
 
+	void setTextureCoords(Vector t0, Vector t1, Vector t2);
+
 	Vector get_normal(Vector& v) const override;
 
 	Color get_color(const Ray& ray, const Vector& intersection, const Color& globalAmbient) const override;
 	double intersect(const Ray& ray, ObjektConstPtr* child) const override;
-
 	Vector barycentric(const Vector& point) const;
 
 	std::array<const Vector*, 3> getPoints() const { return std::array<const Vector*, 3>{{ &p0, &p1, &p2 }}; }

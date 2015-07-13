@@ -97,6 +97,13 @@ const Vector& Triangle::vertex(int i)
 	}
 }
 
+void Triangle::setTextureCoords(Vector t0, Vector t1, Vector t2)
+{
+	this->tex0 = t0;
+	this->tex1 = t1;
+	this->tex2 = t2;
+}
+
 Vector Triangle::barycentric(const Vector& point) const
 {
 	Vector v0 = p1.vsub(p0);

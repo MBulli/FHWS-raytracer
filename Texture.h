@@ -16,8 +16,8 @@ public:
 	~Texture();
 
 	void load();
-	const Color getTexel(double u, double v) const;
-	const Color getPixel(int x, int y) const;
+	Color getTexel(double u, double v) const;
+	Color getPixel(int x, int y) const;
 };
 
 typedef std::shared_ptr<Texture> TexturePtr;

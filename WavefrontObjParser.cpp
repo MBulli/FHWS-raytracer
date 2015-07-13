@@ -90,9 +90,10 @@ std::vector<PolyObjectPtr> WavefrontObjParser::generateGeneratePolyObejekts()
 		{
 			if (!points.empty()) {
 				TrianglePtr triangle = std::make_shared<Triangle>(points[face.data[0][0] - 1], points[face.data[1][0] - 1], points[face.data[2][0] - 1]);
-				/* TODO not implemented
+				
 				if (!texCoords.empty())
 					triangle->setTextureCoords(texCoords[face.data[0][1] - 1], texCoords[face.data[1][1] - 1], texCoords[face.data[2][1] - 1]);
+				/* TODO not implemented
 				if (!normals.empty())
 					triangle->setNormals(normals[face.data[0][2] - 1], normals[face.data[1][2] - 1], normals[face.data[2][2] - 1]);
 					*/
