@@ -156,7 +156,7 @@ double Triangle::intersect(const Ray& ray, ObjektConstPtr* outChild) const
 	static const double epsilon = 1e-7f;
 	static const double epsilon2 = 1e-10;
 
-	const Vector& q = ray.getDirection().cross(e2);
+	const Vector q = ray.getDirection().cross(e2);
 
 	const double a = e1.dot(q);
 
@@ -165,8 +165,8 @@ double Triangle::intersect(const Ray& ray, ObjektConstPtr* outChild) const
 		return NAN;
 	}
 
-	const Vector& s = ray.getOrigin().vsub(p0);
-	const Vector& r = s.cross(e1);
+	const Vector s = ray.getOrigin().vsub(p0);
+	const Vector r = s.cross(e1);
 	const double dist = e2.dot(r) / a;
 
 	// The ray origin is behind the plane
