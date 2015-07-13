@@ -17,7 +17,7 @@ dofSamples 5
 #  Licht-Informationen                                                         *
 #------------------------------------------------------------------------------*
 #
-ambience  	1.0     0.0     1.0
+ambience  	1.0     1.0     1.0
 
 
 #
@@ -28,20 +28,52 @@ ambience  	1.0     0.0     1.0
 #
 object camp wavefront data/SphereCampFire.obj
 
+object sphere1 sphere 0 50 250 50
+object sphere2 sphere 176.777 50 176.777 50
+object sphere3 sphere 250 50 0 50
+object sphere4 sphere 176.777 50 -176.777 50
+object sphere5 sphere 0 50 -250 50
+object sphere6 sphere -176.777 50 -176.777 50
+object sphere7 sphere -250 50 0 50
+object sphere8 sphere -176.777 50 176.777 50
+
 #
 #------------------------------------------------------------------------------*
 #  Oberflaechenbeschaffenheiten                                                *
 #------------------------------------------------------------------------------*
 #
-property pRoomBase
-ambient  0.2    0.0     0.0
-diffuse	 0.7	0.7	0.7
+property propFloor
+ambient  0.01    0.01    0.01
+diffuse	 0.7	0.7		0.7
+specular 0.0	4
+mirror	 1.0
+texture null
+refraction 0 1
+glossy   0.45 200
+opacity	 0.0
+
+
+property propBlue
+ambient  0.01    0.01    0.01
+diffuse	 0.0	0.0		1.0
 specular 1.0	4
 mirror	 0.0
 texture null
 refraction 0 1
 glossy   0 1
 opacity	 0.0
+
+property propGreen
+ambient  0.01    0.01    0.01
+diffuse	 0.0	1.0		0.0
+specular 1.0	4
+mirror	 0.0
+texture null
+refraction 0 1
+glossy   0 1
+opacity	 0.0
+
+
 
 
 #
@@ -64,9 +96,16 @@ opacity	 0.0
 
 #
 # Lichtquelle 4
-point_light l4
-position  0.0  100.0  100.0
-color     1.0  0.0  0.0
+#point_light l4
+#position  200.0  200.0  100.0
+#color     0.7  0.7  0.75
+
+
+circle_area_light l5
+position   0.0  200.0  100.0
+direction  0.0	 -1.0	 0.0
+radius     55
+color      1.0  0.0  0.0
 
 #
 #
@@ -78,12 +117,12 @@ color     1.0  0.0  0.0
 #
 # Zuordnungstabelle
 
-object Plane pRoomBase
-object Sphere1 pRoomBase
-object Sphere2 pRoomBase
-object Sphere3 pRoomBase
-object Sphere4 pRoomBase
-object Sphere5 pRoomBase
-object Sphere6 pRoomBase
-object Sphere7 pRoomBase
-object Sphere8 pRoomBase
+object Plane propFloor
+object sphere1 propBlue
+object sphere2 propGreen
+object sphere3 propBlue
+object sphere4 propGreen
+object sphere5 propBlue
+object sphere6 propGreen
+object sphere7 propBlue
+object sphere8 propGreen

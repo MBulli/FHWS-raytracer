@@ -133,6 +133,15 @@ extern "C" {
 		lights.push_back(light);
 	};
 
+	void add_circle_area_light(char* n, double posx, double posy, double posz, double dirx, double diry, double dirz, double radius, double colr, double colg, double colb)
+	{
+		fprintf(stderr, "  adding circle area light");
+		LightPtr light = make_shared<CircleAreaLight>(Color(colr, colg, colb), 
+													  Vector(posx, posy, posz),
+													  Vector(dirx, diry, dirz), radius);
+		lights.push_back(light);
+	}
+
 
 	// geometry
 	void add_quadric(char *n, double a, double b, double c, double d, double e, double f, double g, double h, double j, double k) {

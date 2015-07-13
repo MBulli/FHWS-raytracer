@@ -11,7 +11,7 @@ class Ray
 	int	 depth;
 	double currentRefractionIndex;
 
-	Color shaded_color(const LightConstPtr& light, const Ray& reflectedray, const Vector& normal, ObjektConstPtr& obj);
+	Color shaded_color(const LightConstPtr& light, const Vector& lightPoint, const Ray& reflectedray, const Vector& normal, ObjektConstPtr& obj);
 
 public:
 	Ray(void) : direction(), origin(), depth (0), currentRefractionIndex(1.0) {};

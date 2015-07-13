@@ -1942,9 +1942,9 @@ yyreduce:
   case 93:
 
     {
-		light.dirx = (yyvsp[(2) - (4)].floatval);
-		light.diry = (yyvsp[(3) - (4)].floatval);
-		light.dirz = (yyvsp[(4) - (4)].floatval);	
+		light.posx = (yyvsp[(2) - (4)].floatval);
+		light.posy = (yyvsp[(3) - (4)].floatval);
+		light.posz = (yyvsp[(4) - (4)].floatval);	
 	;}
     break;
 

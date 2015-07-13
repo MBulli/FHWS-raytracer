@@ -63,10 +63,12 @@ Color Ray::shade(const vector<ObjektConstPtr> &objects, const vector<LightConstP
 		translucent_ray = transculent(intersection_position);
 
 		for (const LightConstPtr& li : lights) {
-			lv.setDirection(li->getDirection(intersection_position));
-			lv.setOrigin(intersection_position);
 
-			double lightDist = li->getDistance(intersection_position);
+			const Vector randomLightPoint = li->randomPoint();
+
+			double lightDist = li->getDistance(intersection_position, randomLightPoint);
+			lv.setDirection(li->getDirection(intersection_position, randomLightPoint));
+			lv.setOrigin(intersection_position);
 
 			something_intersected = false;
 			for (const ObjektConstPtr& obj : objects)
@@ -82,7 +84,7 @@ Color Ray::shade(const vector<ObjektConstPtr> &objects, const vector<LightConstP
 
 			// Light color
 			if (something_intersected == false) {
-				Color new_color = shaded_color(li, reflected_ray, normal, closest);
+				Color new_color = shaded_color(li, randomLightPoint, reflected_ray, normal, closest);
 				cur_color = cur_color.addcolor(new_color);
 			} 
 		}
@@ -146,11 +148,13 @@ Color Ray::shade(const vector<ObjektConstPtr> &objects, const vector<LightConstP
 /* Rueckgabeparameter: errechnete Farbe                                       */
 /*----------------------------------------------------------------------------*/
 
-Color Ray::shaded_color(const LightConstPtr& light, const Ray& reflectedray, const Vector& normal, ObjektConstPtr& obj)
+Color Ray::shaded_color(const LightConstPtr& light, const Vector& lightPoint, const Ray& reflectedray, const Vector& normal, ObjektConstPtr& obj)
 {
 	Color reflected_color = Color();
 
-	Vector lightDir = light->getDirection(reflectedray.getOrigin()).normalize();
+	const Vector lightDir = light->getDirection(reflectedray.getOrigin(), lightPoint);
+	const double lightIntensity = light->getItensity(reflectedray.getOrigin(), lightPoint);
+
 	// Diffuse light
 	double ldot = lightDir.dot(normal);
 	if (1.0 + ldot > 1.0) {
@@ -167,7 +171,7 @@ Color Ray::shaded_color(const LightConstPtr& light, const Ray& reflectedray, con
 		reflected_color = reflected_color.addcolor(specular);
 	}
 	
-	return reflected_color;
+	return reflected_color.scmpy(lightIntensity);
 } /* shaded_color() */
 
 /*----------------------------------------------------------------------------*/
