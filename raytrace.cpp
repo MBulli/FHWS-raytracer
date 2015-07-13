@@ -178,7 +178,7 @@ void tracePartition(Config& c, Parser& parser, int num_threads, int startScanlin
 
 int main(int argc, _TCHAR* argv[])
 {
-	Parser parser("data/camp.data");
+	Parser parser("data/test.data");
 	if (!parser.start())
 	{
 		std::cin.get();

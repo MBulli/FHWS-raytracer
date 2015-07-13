@@ -13,6 +13,8 @@ public:
 	Color addcolor(const Color &c) const;
 	Color outprodc(const Color &c) const;
 	Color scmpy(double s) const;
+
+	bool isNull() const { return isnan(r) || isnan(g) || isnan(b); }
 };
 
 class AccumulatedColor {

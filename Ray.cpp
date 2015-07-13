@@ -56,7 +56,16 @@ Color Ray::shade(const vector<ObjektConstPtr> &objects, const vector<LightConstP
 	} else {
 		intersection_position = intersectionPoint(min_t);
 		normal = closest->get_normal(intersection_position);
-		cur_color = closest->get_color(*this, intersection_position, globalAmbient); // Ambient color
+
+		// Ambient color
+		cur_color = closest->getProperty().getAmbient();
+		// Texture
+		Color texColor = closest->get_texture_color(intersection_position);
+		if (!texColor.isNull()) {
+			cur_color = cur_color.outprodc(texColor);
+		}
+		// Global Ambient
+		cur_color = cur_color.outprodc(globalAmbient);
 
 		reflected_ray = reflect(intersection_position, normal);
 		refracted_ray = refraction(intersection_position, normal, closest);
@@ -84,7 +93,7 @@ Color Ray::shade(const vector<ObjektConstPtr> &objects, const vector<LightConstP
 
 			// Light color
 			if (something_intersected == false) {
-				Color new_color = shaded_color(li, randomLightPoint, reflected_ray, normal, closest);
+				Color new_color = shaded_color(li, randomLightPoint, reflected_ray, normal, closest, texColor);
 				cur_color = cur_color.addcolor(new_color);
 			} 
 		}
@@ -148,10 +157,10 @@ Color Ray::shade(const vector<ObjektConstPtr> &objects, const vector<LightConstP
 /* Rueckgabeparameter: errechnete Farbe                                       */
 /*----------------------------------------------------------------------------*/
 
-Color Ray::shaded_color(const LightConstPtr& light, const Vector& lightPoint, const Ray& reflectedray, const Vector& normal, ObjektConstPtr& obj)
+Color Ray::shaded_color(const LightConstPtr& light, const Vector& lightPoint, const Ray& reflectedray, const Vector& normal, ObjektConstPtr& obj, const Color& textureColor)
 {
-	Color reflected_color = Color();
-
+	Color diffuse, specular;
+	
 	const Vector lightDir = light->getDirection(reflectedray.getOrigin(), lightPoint);
 	const double lightIntensity = light->getItensity(reflectedray.getOrigin(), lightPoint);
 
@@ -159,7 +168,7 @@ Color Ray::shaded_color(const LightConstPtr& light, const Vector& lightPoint, co
 	double ldot = lightDir.dot(normal);
 	if (1.0 + ldot > 1.0) {
 		Color lambert = light->getColor().scmpy(ldot);
-		reflected_color = lambert.outprodc(obj->getProperty().getReflectance());
+		diffuse = lambert.outprodc(obj->getProperty().getReflectance());
 	}
 
 	// Specular light
@@ -167,8 +176,13 @@ Color Ray::shaded_color(const LightConstPtr& light, const Vector& lightPoint, co
 	if (1.0 + spec > 1.0) {
 		spec = pow(spec, obj->getProperty().getShininess());
 		spec *= obj->getProperty().getSpecular();
-		Color specular =  light->getColor().scmpy(spec);
-		reflected_color = reflected_color.addcolor(specular);
+		specular =  light->getColor().scmpy(spec);
+	}
+
+	Color reflected_color = diffuse.addcolor(specular);
+
+	if (!textureColor.isNull())	{
+		reflected_color = reflected_color.outprodc(textureColor);
 	}
 	
 	return reflected_color.scmpy(lightIntensity);

@@ -3,7 +3,7 @@
 #include "Ray.h"
 
 
-Color Objekt::get_color(const Ray& ray, const Vector& intersection, const Color& globalAmbient) const
+Color Objekt::get_texture_color(const Vector& intersection) const
 {
-	return property->getAmbient().outprodc(globalAmbient);
+	return Color(NAN, NAN, NAN);
 }

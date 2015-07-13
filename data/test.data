@@ -180,7 +180,7 @@ opacity	 0.0
 # Oberflaechenbeschaffenheit 1
 property prop5
 ambient  0.2    0.0     0.0	  # leicht roetlicher Filter
-diffuse	 0.7	0.7	0.7	      # helleres silbergrau
+diffuse	 0.7	0.7		0.7   # helleres silbergrau
 specular 1.0	8			  # Besser wäre specular 1.0	4  
 mirror	 0.8
 texture chess.png
@@ -225,7 +225,7 @@ color	   0.0	 0.5	 1.0
 #object  mySphere prop5
 #object  cube     prop4
 object  tri     prop3
-object  plane prop3
+object  plane prop5
 #object innerSphere  prop3
 #object tri2 prop1
 object pyramide prop4

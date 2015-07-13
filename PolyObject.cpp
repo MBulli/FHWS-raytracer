@@ -122,9 +122,9 @@ Vector Triangle::barycentric(const Vector& point) const
 	return Vector(u, v, w);
 }
 
-Color Triangle::get_color(const Ray& ray, const Vector& intersection, const Color& globalAmbient) const
+Color Triangle::get_texture_color(const Vector& intersection) const
 {
-	Color matColor = Objekt::get_color(ray, intersection, globalAmbient);
+	Color matColor = Objekt::get_texture_color(intersection);
 	if (property->getTexture())
 	{
 		Vector bary = barycentric(intersection);
